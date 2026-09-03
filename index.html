@@ -1,0 +1,3193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>outfits.</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="outfits.">
+<meta name="theme-color" content="#000000">
+
+<!-- Lines for the site icon and home screen -->
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  :root{
+    --bg:#000000;
+    --surface:#0c0c0c;
+    --surface2:#141414;
+    --ink:#F5F4F0;
+    --muted: rgba(245,244,240,0.52);
+    --line: rgba(245,244,240,0.14);
+    --line-strong: rgba(245,244,240,0.30);
+    --accent:#F5F4F0;
+    --accent-rgb:245,244,240;
+    --on-accent:#0A0A0A;
+
+    /* Colori stagionali scuri e integrati nel tema nero/bianco */
+    --vibe-spring: #2A382B;
+    --vibe-spring-rgb: 42, 56, 43;
+    --vibe-summer: #b45309; 
+    --vibe-summer-rgb: 180, 83, 9;
+    --vibe-autumn: #4E281F;
+    --vibe-autumn-rgb: 78, 40, 31;
+    --vibe-winter: #8C929A;
+    --vibe-winter-rgb: 140, 146, 154;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Roboto Mono', monospace !important; text-transform:lowercase !important; }
+  input::placeholder, textarea::placeholder{ text-transform:lowercase !important; }
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    overscroll-behavior-y:none;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background .4s ease;
+  }
+  h1,h2,.serif{ font-family:'Metal Mania','Orbitron', sans-serif; letter-spacing:.02em; }
+  .script{ font-family:'Herr Von Muellerhoff', cursive; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* --- ambient sigil layers --- */
+  .grid-layer{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(var(--accent-rgb),0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb),0.10) 1px, transparent 1px);
+    background-size: 34px 34px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, black, transparent 72%);
+    mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, black, transparent 72%);
+    transition: background-image .4s ease;
+  }
+  .scan-layer{
+    position:fixed; left:0; right:0; height:140px; top:-140px; z-index:0; pointer-events:none;
+    background:linear-gradient(to bottom, transparent, rgba(var(--accent-rgb),0.07), transparent);
+    animation:scan 10s linear infinite; mix-blend-mode:screen;
+  }
+  @keyframes scan{ from{ top:-140px; } to{ top:100vh; } }
+
+  .vibe-layer{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .vibe-particle{ position:absolute; top:-24px; opacity:.75; animation:vibe-fall linear infinite; }
+  @keyframes vibe-fall{
+    from{ transform:translateY(-30px) translateX(0) rotate(0deg); }
+    to{ transform:translateY(112vh) translateX(var(--drift,24px)) rotate(var(--rot,70deg)); }
+  }
+
+  /* Stili e Colori specifici delle Particelle */
+  .vibe-particle.petal{ 
+    width:8px; height:8px; 
+    border-radius:60% 40% 60% 40%; 
+    background: var(--vibe-spring); 
+    box-shadow: 0 0 6px rgba(var(--vibe-spring-rgb), 0.5);
+  }
+  .vibe-particle.leaf{ 
+    width:10px; height:10px; 
+    border-radius:0 60% 0 60%; 
+    background: var(--vibe-autumn); 
+    box-shadow: 0 0 6px rgba(var(--vibe-autumn-rgb), 0.5);
+  }
+  .vibe-particle.snow{ 
+    width:5px; height:5px; 
+    border-radius:50%; 
+    background: var(--vibe-winter); 
+    opacity:.6;
+    box-shadow: 0 0 4px rgba(var(--vibe-winter-rgb), 0.6);
+  }
+  
+  /* Summer sun made smaller, dimmer and pushed to the background */
+  .vibe-glow{ 
+    position:absolute; width:45vw; height:45vw; max-width:300px; max-height:300px; top:-10vw; right:-8vw;
+    background:radial-gradient(circle, rgba(217, 119, 6, 0.45) 0%, rgba(var(--vibe-summer-rgb),0.25) 45%, transparent 75%); 
+    filter:blur(2px);
+    animation: vibe-pulse 4s ease-in-out infinite alternate; 
+    z-index:-2;
+  }
+  @keyframes vibe-pulse{ from{ opacity:.5; transform:scale(0.95); } to{ opacity:.75; transform:scale(1.05); } }
+
+  /* --- gothic ornamentation --- */
+  .gothic-ornament{
+    position:absolute; top:0; left:0; width:100%; height:190px; color:var(--accent);
+    opacity:.6; pointer-events:none; z-index:-1;
+    filter: drop-shadow(0 0 5px rgba(var(--accent-rgb),0.35));
+    transition: color .3s, opacity .3s;
+  }
+  .gothic-ornament.accented{ color:var(--accent); }
+  .script-layer{
+    position:fixed; inset:0; z-index:-2; pointer-events:none; overflow:hidden;
+    color:var(--ink); opacity:.055; transition: color .4s, opacity .4s;
+  }
+  .script-layer span{
+    position:absolute; font-family:'Herr Von Muellerhoff', cursive; white-space:nowrap; z-index:-2;
+  }
+  .script-layer span:nth-child(1){ top:22%; left:-6%; font-size:15vw; transform:rotate(-8deg); }
+  .script-layer span:nth-child(2){ top:58%; left:4%; font-size:9vw; transform:rotate(-4deg); }
+  .script-layer span:nth-child(3){ top:78%; left:-4%; font-size:12vw; transform:rotate(-6deg); }
+  @media (prefers-reduced-motion: reduce){
+    .scan-layer{ display:none; }
+    .vibe-particle{ animation:none !important; }
+    .sparkle{ animation:none !important; }
+  }
+
+  .app{ max-width:560px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; position:relative; z-index:1; }
+
+  /* --- header --- */
+  header{
+    padding: max(18px, env(safe-area-inset-top)) 20px 6px;
+    display:flex; align-items:flex-start; justify-content:space-between; position:relative; z-index:0;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .sigil{ width:30px; height:30px; color:var(--accent); flex-shrink:0; filter: drop-shadow(0 0 6px rgba(var(--accent-rgb),0.6)); transition: color .3s; }
+  header h1{
+    margin:0; font-size:30px; font-weight:400; letter-spacing:.03em; color:var(--ink); text-transform:lowercase;
+  }
+  .sparkle{ position:absolute; color:var(--accent); font-size:13px; animation:sparkle-pulse 2.6s ease-in-out infinite; pointer-events:none; }
+  .sparkle.s1{ top:14px; right:64px; animation-delay:.4s; }
+  .sparkle.s2{ top:52px; right:24px; font-size:9px; animation-delay:1.2s; }
+  @keyframes sparkle-pulse{ 0%,100%{ opacity:.25; transform:scale(.8) rotate(0deg);} 50%{ opacity:1; transform:scale(1.1) rotate(12deg);} }
+
+  .header-subtitles{ margin:5px 20px 0; }
+  .slogan{ margin:0; color:var(--accent); font-size:13.5px; font-weight:600; letter-spacing:.03em; text-transform:lowercase; }
+  .season-info{ margin:3px 0 0; color:var(--muted); font-size:12px; }
+
+  .barbed-divider{
+    height:5px; margin:14px 20px 0; background:var(--accent); opacity:.5;
+    clip-path: polygon(0% 0%,5% 100%,10% 0%,15% 100%,20% 0%,25% 100%,30% 0%,35% 100%,40% 0%,45% 100%,
+      50% 0%,55% 100%,60% 0%,65% 100%,70% 0%,75% 100%,80% 0%,85% 100%,90% 0%,95% 100%,100% 0%);
+    transition: background .3s;
+  }
+
+  nav.mainnav{
+    display:flex; gap:6px; margin:14px 20px 4px; padding:4px;
+    background: var(--surface); border:1px solid var(--line); border-radius:12px;
+  }
+  nav.mainnav button{
+    flex:1; border:none; background:none; padding:10px 0; font-family:'Metal Mania','Orbitron';
+    font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:lowercase; color:var(--muted); border-radius:9px; cursor:pointer;
+    transition: background .2s, color .2s, box-shadow .2s;
+  }
+  nav.mainnav button.active{ background:var(--accent); color:var(--on-accent); box-shadow:0 0 14px rgba(var(--accent-rgb),0.5); }
+
+  /* --- search bar --- */
+  .search-box{
+    margin:12px 20px 0; position:relative; display:flex; align-items:center;
+  }
+  .search-box input{
+    width:100%; background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:9px 12px 9px 36px; color:var(--ink); font-family:'Space Grotesk', sans-serif; font-size:13px;
+    outline:none; transition: border-color .2s;
+  }
+  .search-box input:focus{ border-color:var(--line-strong); }
+  .search-box svg{
+    position:absolute; left:11px; width:16px; height:16px; color:var(--muted); pointer-events:none;
+  }
+
+  .seasons{ display:flex; gap:8px; margin:16px 20px 6px; overflow-x:auto; padding-bottom:2px; }
+  .seasons::-webkit-scrollbar{ display:none; }
+  .season-tab{
+    border:1.5px solid var(--line-strong); background:transparent; padding:7px 14px; border-radius:20px;
+    font-family:'Space Grotesk'; font-size:13.5px; font-weight:600; color:var(--muted); white-space:nowrap;
+    cursor:pointer; transition: all .15s; display:flex; align-items:center; gap:7px;
+  }
+  .season-tab .dot{ width:7px; height:7px; border-radius:50%; border:1.4px solid currentColor; background:transparent; }
+  .season-tab.active{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.45); }
+  .season-tab.active .dot{ background:var(--on-accent); border-color:var(--on-accent); }
+
+  main{ flex:1; padding: 8px 20px 108px; position:relative; }
+
+  .board{
+    display:grid; grid-template-columns: 1fr 1fr; gap:16px 14px; margin-top:14px;
+  }
+  .card{
+    background:var(--surface); border-radius:6px; padding:8px 8px 12px; border:1px solid var(--line);
+    cursor:pointer; position:relative; transition: box-shadow .2s, border-color .2s; min-width:0;
+  }
+  .card:active{ box-shadow:0 0 0 1.5px var(--accent), 0 0 16px rgba(var(--accent-rgb),0.35); }
+  .card::before, .card::after{
+    content:''; position:absolute; width:12px; height:12px; border-color:var(--accent); opacity:.85; pointer-events:none;
+  }
+  .card::before{ top:-1px; left:-1px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); }
+  .card::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); }
+  .card img{ width:100%; aspect-ratio: 3/4; object-fit:cover; display:block; border-radius:3px; }
+  .card .card-title{ font-family:'Space Grotesk'; font-size:12px; font-weight:600; color:var(--ink); margin-top:7px; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-transform:lowercase; }
+  .card .when{ font-family:'JetBrains Mono'; font-size:10.5px; color:var(--muted); margin-top:2px; text-align:center; letter-spacing:.02em; }
+  .card .tag{ position:absolute; top:14px; left:14px; background:rgba(0,0,0,0.78); color:var(--accent); font-size:9.5px;
+    font-family:'JetBrains Mono'; font-weight:500; padding:3px 7px; border-radius:5px; letter-spacing:.04em; border:1px solid var(--accent); z-index:1; }
+
+  .empty{
+    margin-top:44px; text-align:center; color:var(--muted);
+  }
+  .empty .serif{ font-size:17px; color:var(--ink); display:block; margin-bottom:6px; font-weight:700; text-transform:lowercase; }
+  .empty span.small{ font-size:13.5px; }
+
+  .fab{
+    position:fixed; left:50%; transform:translateX(-50%); bottom: calc(22px + env(safe-area-inset-bottom));
+    background:var(--accent); color:var(--on-accent); border:none; border-radius:8px;
+    padding:15px 26px; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:lowercase;
+    display:flex; align-items:center; gap:8px; box-shadow:0 0 22px rgba(var(--accent-rgb),0.55), 0 6px 18px rgba(0,0,0,0.5);
+    cursor:pointer; max-width:520px; width:calc(100% - 40px); justify-content:center; z-index:20;
+  }
+  .fab svg{ width:18px; height:18px; }
+  .fab.secondary{ background:var(--surface); color:var(--ink); border:1.5px solid var(--line-strong); box-shadow:none; }
+
+  .fab-row{ position:fixed; left:50%; transform:translateX(-50%); bottom: calc(22px + env(safe-area-inset-bottom));
+    max-width:520px; width:calc(100% - 40px); display:flex; gap:10px; z-index:20; }
+  .fab-row .fab{ position:static; transform:none; width:auto; flex:1; }
+
+  .week{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .daycard{
+    display:flex; align-items:center; gap:14px; background:var(--surface); border-radius:8px; border:1px solid var(--line);
+    padding:10px; position:relative; cursor:pointer; transition: border-color .2s;
+  }
+  .daycard:hover{ border-color:var(--line-strong); }
+  .daycard .thumb{ width:56px; height:56px; border-radius:6px; object-fit:cover; flex-shrink:0; background:var(--surface2); }
+  .daycard .info{ flex:1; min-width:0; }
+  .daycard .day{ font-family:'Metal Mania','Orbitron'; font-size:13px; font-weight:700; letter-spacing:.03em; text-transform:lowercase; }
+  .daycard .sub{ font-size:12px; color:var(--muted); margin-top:3px; text-transform:lowercase; }
+  .daycard.empty-day{ opacity:.7; }
+  .daycard.today-day{ border:1.5px solid var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.3); }
+  .day-num{ color:var(--accent); font-weight:700; margin-left:6px; }
+  .today-day .day-num::after{ content:' · today'; color:var(--accent); font-size:9px; letter-spacing:.04em; }
+  .daycard-actions{ display:flex; flex-wrap:wrap; gap:6px; margin-left:auto; justify-content:flex-end; max-width:112px; }
+  .daycard-actions button{
+    background:var(--surface2); border:1px solid var(--line-strong); color:var(--ink);
+    padding:6px 10px; border-radius:6px; font-size:11px; font-family:'Space Grotesk'; cursor:pointer;
+    display:flex; align-items:center; gap:4px; text-transform:lowercase;
+  }
+  .daycard-actions button:active{ background:var(--accent); color:var(--on-accent); }
+
+  .regen{
+    margin-top:18px; width:100%; padding:13px; border-radius:8px; border:1.5px solid var(--line-strong);
+    background:transparent; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:12px; letter-spacing:.06em; color:var(--ink); text-transform:lowercase;
+    cursor:pointer;
+  }
+  .regen:active{ background:var(--surface); border-color:var(--accent); color:var(--accent); }
+
+  .week-header{ display:flex; align-items:baseline; justify-content:space-between; margin-top:16px; }
+  .week-header .serif{ font-size:17px; text-transform:lowercase; }
+  .week-header .sub{ font-size:12px; color:var(--muted); text-transform:lowercase; }
+
+  .back-link{ display:flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; font-weight:600;
+    background:none; border:none; cursor:pointer; padding:6px 0; font-family:'Space Grotesk'; text-transform:lowercase; }
+  .back-link svg{ width:16px; height:16px; }
+
+  /* --- month calendar --- */
+  .month-nav{ display:flex; align-items:center; justify-content:space-between; margin-top:16px; }
+  .month-nav button{ background:var(--surface); border:1.5px solid var(--line-strong); border-radius:8px; width:38px; height:38px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); }
+  .month-nav button svg{ width:18px; height:18px; }
+  .month-title{ text-align:center; }
+  .month-title .serif{ font-size:17px; display:block; text-transform:lowercase; }
+  .month-title .sub{ font-size:11.5px; color:var(--muted); text-transform:lowercase; }
+  .today-link{ display:block; margin:10px auto 0; background:none; border:none; color:var(--accent); font-weight:700;
+    font-size:12.5px; cursor:pointer; font-family:'Metal Mania','Orbitron'; letter-spacing:.04em; text-transform:lowercase; }
+
+  .week-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface);
+    border-radius:8px; padding:14px 16px; margin-top:10px; border:1px solid var(--line); cursor:pointer; }
+  .week-row .range{ font-family:'Metal Mania','Orbitron'; font-size:13.5px; font-weight:700; text-transform:lowercase; }
+  .week-row .filled{ font-size:11px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono'; text-transform:lowercase; }
+  .week-row .chev{ width:16px; height:16px; color:var(--muted); flex-shrink:0; }
+  .week-row.current{ border:1.5px solid var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.3); }
+
+  /* --- single pieces --- */
+  .cat-chip-row{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .cat-chip{ border:1.5px solid var(--line-strong); background:transparent; padding:8px 13px; border-radius:20px;
+    font-family:'Space Grotesk'; font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer; text-transform:lowercase; }
+  .cat-chip.selected{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+  .cat-chip.count0{ opacity:.4; }
+  .cat-chip-add{ width:36px; height:36px; border-radius:50%; border:1.5px solid var(--accent); background:transparent;
+    color:var(--accent); font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .cat-chip-add:active{ background:var(--accent); color:var(--on-accent); }
+
+  .fullview-body .search-box{ margin:0 0 6px; }
+
+  .abbina-btn{ margin-top:16px; width:100%; padding:13px; border-radius:8px; border:1.5px solid var(--accent);
+    background:transparent; color:var(--accent); font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:12.5px; letter-spacing:.05em; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px; text-transform:lowercase; }
+  .abbina-btn:active{ background:rgba(var(--accent-rgb),0.12); }
+
+  /* --- mix view, full screen --- */
+  .fullview{ position:fixed; inset:0; background:var(--bg); z-index:40; display:flex; flex-direction:column; }
+  .fullview-header{ display:flex; align-items:center; gap:10px; padding: max(18px, env(safe-area-inset-top)) 20px 10px; }
+  .fullview-header h2{ margin:0; font-size:18px; font-weight:800; letter-spacing:.03em; text-transform:lowercase; }
+  .fullview-body{ flex:1; overflow-y:auto; padding:6px 20px 120px; }
+
+  .cat-section{ margin-top:20px; }
+  .cat-section .cat-label{ font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px; font-family:'JetBrains Mono'; letter-spacing:.06em; text-transform:lowercase; }
+  .piece-scroll{ display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; }
+  .piece-scroll::-webkit-scrollbar{ display:none; }
+  .piece-thumb{ width:74px; height:74px; border-radius:8px; object-fit:cover; flex-shrink:0; cursor:pointer;
+    border:2px solid var(--line); opacity:.8; transition: all .15s ease; }
+  .piece-thumb.selected{ border-color:var(--accent); opacity:1; box-shadow:0 0 10px rgba(var(--accent-rgb),0.5); transform: scale(1.03); }
+  .piece-empty-cat{ font-size:13px; color:var(--muted); font-style:normal; text-transform:lowercase; }
+
+  .selection-preview{ display:flex; gap:8px; flex-wrap:wrap; margin-top:18px; min-height:0; }
+  .selection-preview img{ width:50px; height:50px; border-radius:6px; object-fit:cover; border:1px solid var(--line); }
+  .selection-hint{ font-size:12.5px; color:var(--muted); margin-top:20px; text-transform:lowercase; }
+
+  /* Checkbox for multi-season selection in mix */
+  .season-multi-select{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .season-checkbox-btn{
+    border:1.5px solid var(--line-strong); background:transparent; padding:7px 14px; border-radius:20px;
+    font-family:'Space Grotesk'; font-size:13px; font-weight:600; color:var(--muted);
+    cursor:pointer; transition: all .15s; display:flex; align-items:center; gap:7px; text-transform:lowercase;
+  }
+  .season-checkbox-btn.selected{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.45); }
+
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.82); display:none; align-items:center; justify-content:center;
+    z-index:50; padding:24px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal{ max-width:420px; width:100%; max-height:85vh; overflow-y:auto; }
+  .modal img{ width:100%; border-radius:6px; display:block; border:1px solid var(--line-strong); }
+  .modal-title-display{ font-family:'Space Grotesk'; font-size:16px; font-weight:700; margin-top:12px; text-align:center; color:var(--ink); text-transform:lowercase; }
+  .modal-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .modal-actions button{
+    flex:1; min-width:calc(50% - 5px); padding:12px; border-radius:8px; border:none; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:11px; letter-spacing:.04em; cursor:pointer; text-transform:lowercase;
+  }
+  .btn-close{ background:var(--surface2); color:var(--ink); border:1.5px solid var(--line-strong) !important; }
+  .btn-rename{ background:var(--accent); color:var(--on-accent); }
+  .btn-delete{ background:#7a1f2b; color:#fff; }
+
+  /* Outfit selection modal for the week */
+  .picker-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .picker-card{ background:var(--surface2); border:1px solid var(--line); border-radius:6px; padding:6px; cursor:pointer; text-align:center; }
+  .picker-card:active{ border-color:var(--accent); }
+  .picker-card img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:4px; }
+  .picker-card .title{ font-size:11px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-transform:lowercase; }
+
+  .sheet{ position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:flex-end; justify-content:center; z-index:55; }
+  .sheet.show{ display:flex; }
+  .sheet-inner{ background:var(--surface); width:100%; max-width:560px; border-radius:16px 16px 0 0; padding:22px 20px calc(26px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line-strong); }
+  .sheet-inner h3{ margin:0 0 14px; font-family:'Metal Mania','Orbitron'; font-size:15px; font-weight:700; letter-spacing:.02em; text-transform:lowercase; }
+  .sheet-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  /* Additional styles for photo source options */
+  .source-options{ display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .source-btn{ padding:14px; border-radius:8px; border:1px solid var(--line-strong); background:var(--surface2); color:var(--ink);
+    font-family:'Space Grotesk'; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; text-transform:lowercase; }
+  .source-btn:active{ background:var(--accent); color:var(--on-accent); }
+
+  #fileInputCamera, #fileInputGallery, #fileInputPieceCamera, #fileInputPieceGallery{ display:none; }
+
+  .toast{
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+    background:var(--surface); color:var(--ink); padding:10px 18px; border-radius:20px; border:1px solid var(--line-strong);
+    font-size:13px; font-weight:500; opacity:0; pointer-events:none; transition:opacity .25s;
+    z-index:90; text-transform:lowercase;
+  }
+  .toast.show{ opacity:1; }
+
+  .install-banner{ margin:14px 20px 0; background:var(--surface); border-radius:12px; padding:13px 15px; border:1px solid var(--line);
+    display:flex; align-items:center; gap:12px; }
+  .install-banner p{ margin:0; font-size:12px; color:var(--muted); line-height:1.4; flex:1; text-transform:lowercase; }
+  .install-banner button{ background:var(--accent); color:var(--on-accent); border:none; border-radius:7px; padding:8px 12px;
+    font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:11px; letter-spacing:.04em; cursor:pointer; white-space:nowrap; text-transform:lowercase; }
+  .install-banner .close-x{ background:none; color:var(--muted); font-size:16px; padding:0 2px; }
+
+  /* --- account, amici, notifiche --- */
+  .header-actions{ display:flex; align-items:center; gap:10px; margin-top:2px; }
+  .icon-btn{ position:relative; width:38px; height:38px; border-radius:8px; background:var(--surface); border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); }
+  .icon-btn svg{ width:18px; height:18px; }
+  .icon-btn .badge{ position:absolute; top:-5px; right:-5px; background:var(--vibe-summer); color:#fff; font-family:'JetBrains Mono';
+    font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    padding:0 3px; border:1.5px solid var(--bg); }
+  .profile-avatar{ width:38px; height:38px; border-radius:8px; background:var(--accent); color:var(--on-accent);
+    display:flex; align-items:center; justify-content:center; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:15px;
+    cursor:pointer; border:1px solid var(--line-strong); text-transform:uppercase; }
+
+  main{ padding-bottom: 176px; }
+
+  .bottom-tabbar{ position:fixed; left:0; right:0; bottom:0; z-index:25; background:rgba(10,10,10,0.92); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); display:flex; justify-content:center; padding-bottom:env(safe-area-inset-bottom); }
+  .bottom-tabbar-inner{ max-width:560px; width:100%; display:flex; }
+  .tabbar-btn{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:11px 0 9px; background:none; border:none;
+    color:var(--muted); cursor:pointer; font-family:'Space Grotesk'; font-size:10.5px; font-weight:600; letter-spacing:.04em; text-transform:lowercase; }
+  .tabbar-btn svg{ width:21px; height:21px; }
+  .tabbar-btn.active{ color:var(--accent); }
+  .tabbar-btn .tabbar-badge{ position:absolute; margin-left:14px; margin-top:-2px; background:var(--vibe-summer); color:#fff;
+    font-size:9px; font-weight:700; min-width:14px; height:14px; border-radius:7px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+
+  .fab{ bottom: calc(86px + env(safe-area-inset-bottom)); }
+  .toast{ bottom: calc(164px + env(safe-area-inset-bottom)); }
+
+  /* --- gate schermo intero: login / scelta username --- */
+  .gate{ position:fixed; inset:0; z-index:70; background:var(--bg); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:32px; text-align:center; }
+  .gate .sigil{ width:52px; height:52px; margin-bottom:18px; filter: drop-shadow(0 0 10px rgba(var(--accent-rgb),0.6)); }
+  .gate h1{ margin:0 0 8px; font-size:30px; text-transform:lowercase; }
+  .gate p{ color:var(--muted); font-size:13.5px; margin:0 0 28px; max-width:280px; line-height:1.5; text-transform:lowercase; }
+  .google-btn{ display:flex; align-items:center; gap:10px; background:var(--surface); color:var(--ink); border:1.5px solid var(--line-strong);
+    padding:13px 24px; border-radius:10px; font-family:'Space Grotesk'; font-weight:600; font-size:14px; cursor:pointer; text-transform:lowercase; }
+  .google-btn svg{ width:18px; height:18px; }
+  .username-input-wrap{ width:100%; max-width:300px; }
+  .username-input-wrap input{ width:100%; background:var(--surface); border:1.5px solid var(--line-strong); border-radius:10px;
+    padding:13px 14px; color:var(--ink); font-family:'JetBrains Mono'; font-size:15px; outline:none; text-align:center; text-transform:lowercase; }
+  .username-input-wrap input:focus{ border-color:var(--accent); }
+  .username-status{ font-size:12px; margin-top:10px; min-height:16px; text-transform:lowercase; }
+  .username-status.ok{ color:#5fbf74; }
+  .username-status.taken{ color:#e05a5a; }
+  .gate .confirm-btn{ margin-top:18px; background:var(--accent); color:var(--on-accent); border:none; border-radius:10px;
+    padding:13px 30px; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:13px; letter-spacing:.05em; cursor:pointer;
+    text-transform:lowercase; opacity:.4; pointer-events:none; }
+  .gate .confirm-btn.enabled{ opacity:1; pointer-events:auto; }
+  .gate .signout-link{ margin-top:22px; background:none; border:none; color:var(--muted); font-size:12.5px; cursor:pointer; text-transform:lowercase; }
+  .gate .consent-row{ display:flex; align-items:flex-start; gap:8px; max-width:280px; margin-top:16px; text-align:left; }
+  .gate .consent-row input[type="checkbox"]{ margin-top:3px; width:16px; height:16px; accent-color:var(--accent); flex-shrink:0; }
+  .gate .consent-row label{ font-size:11.5px; color:var(--muted); line-height:1.5; }
+  .gate .consent-row a, .profile-privacy-link{ color:var(--accent); text-decoration:underline; cursor:pointer; background:none; border:none; font:inherit; padding:0; }
+  .google-btn.disabled{ opacity:.4; pointer-events:none; }
+  .privacy-sheet-inner{ height:80vh; max-height:80vh; display:flex; flex-direction:column; }
+  .privacy-sheet-head{ display:flex; align-items:center; justify-content:space-between; margin:0 0 14px; flex-shrink:0; }
+  .privacy-sheet-head h3{ margin:0; }
+  .privacy-close-btn{ background:none; border:none; color:var(--muted); font-size:11px; font-family:'JetBrains Mono'; cursor:pointer; padding:4px 0; }
+  .privacy-body{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; font-size:12.5px; line-height:1.6; color:var(--muted); }
+  .privacy-body h4{ color:var(--fg); margin:16px 0 6px; font-size:12.5px; }
+  .privacy-body h4:first-child{ margin-top:0; }
+  .privacy-body p{ margin:0 0 10px; }
+  .privacy-body ul{ margin:0 0 10px; padding-left:18px; }
+  .privacy-body li{ margin:0 0 4px; }
+  #privacySheet{ z-index:90; } /* must stay above the gate screens (z-index 70), or it opens hidden behind them */
+  .swagrank-badge{ background:var(--accent); color:var(--on-accent); border-radius:999px; padding:1px 7px; font-size:11px; font-weight:700; margin-left:2px; }
+  .swagrank-row{ display:flex; align-items:center; gap:10px; }
+  .swagrank-pos{ width:26px; flex-shrink:0; font-size:13px; text-align:center; }
+  .swagrank-total{ margin-left:auto; font-weight:700; color:var(--accent); font-size:13px; }
+  .swagrank-row.swagrank-me .uname{ color:var(--accent); }
+  .mono-emoji{ filter:grayscale(1) contrast(1.05); }
+
+  /* --- vista amici --- */
+  .friends-search{ margin-top:14px; }
+  .friend-link-row{ display:flex; gap:10px; margin-top:12px; }
+  .friend-link-row button{ flex:1; padding:12px; border-radius:10px; border:1.5px solid var(--line-strong); background:var(--surface);
+    color:var(--ink); font-family:'Space Grotesk'; font-weight:600; font-size:12.5px; cursor:pointer; text-transform:lowercase;
+    display:flex; align-items:center; justify-content:center; gap:7px; }
+  .friend-link-row button svg{ width:15px; height:15px; }
+
+  .section-label{ font-family:'JetBrains Mono'; font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:lowercase;
+    margin:22px 0 8px; }
+
+  .search-result-row, .request-row{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; padding:10px 12px; margin-top:8px; }
+  .mini-avatar{ width:36px; height:36px; border-radius:8px; background:var(--surface2); color:var(--accent); display:flex;
+    align-items:center; justify-content:center; font-family:'Metal Mania','Orbitron'; font-weight:700; font-size:13px; flex-shrink:0; text-transform:uppercase; }
+  .search-result-row .uname, .request-row .uname{ flex:1; font-family:'Space Grotesk'; font-weight:600; font-size:13.5px; text-transform:lowercase; }
+  .small-btn{ padding:8px 12px; border-radius:7px; border:1.5px solid var(--accent); background:transparent; color:var(--accent);
+    font-family:'Space Grotesk'; font-weight:600; font-size:12px; cursor:pointer; text-transform:lowercase; }
+  .small-btn.filled{ background:var(--accent); color:var(--on-accent); }
+  .small-btn.muted{ border-color:var(--line-strong); color:var(--muted); }
+  .request-actions{ display:flex; gap:6px; }
+
+  #viewFriends{ padding: 8px 20px 120px; }
+  .friend-posts-scroll{ display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:2px 2px 8px; margin-top:2px;
+    -webkit-overflow-scrolling:touch; }
+  .friend-posts-scroll::-webkit-scrollbar{ display:none; }
+  .friend-card{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px; flex:0 0 62%; max-width:210px;
+    scroll-snap-align:start; }
+  .friend-card-head{ display:flex; align-items:center; gap:10px; }
+  .friend-card-head .uname{ flex:1; font-family:'Metal Mania','Orbitron'; font-size:12.5px; font-weight:700; text-transform:lowercase; }
+  .friend-card img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; margin-top:8px; border:1px solid var(--line-strong); max-height:220px; cursor:pointer; }
+  .friend-card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+  .swag-btn{ display:flex; align-items:center; gap:6px; background:var(--surface2); border:1.5px solid var(--line-strong); border-radius:20px;
+    padding:6px 11px; color:var(--ink); font-family:'Space Grotesk'; font-weight:700; font-size:11.5px; cursor:pointer; text-transform:lowercase; }
+  .swag-btn svg{ width:13px; height:13px; }
+  .swag-btn.swagged{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.4); }
+  .swag-count-link{ background:none; border:none; color:var(--muted); font-size:10.5px; font-family:'JetBrains Mono'; cursor:pointer; text-transform:lowercase; }
+  .friend-row-plain{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; margin-top:8px; }
+  .friend-row-plain .uname{ font-family:'Space Grotesk'; font-weight:600; font-size:13px; text-transform:lowercase; }
+  .friend-row-plain .no-outfit-note{ font-size:11px; color:var(--muted); text-transform:lowercase; }
+  .friend-row-plain .remove-friend-btn{ margin-left:auto; }
+
+  /* --- notifiche --- */
+  .notif-item{ display:flex; align-items:flex-start; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .notif-item:last-child{ border-bottom:none; }
+  .notif-item .txt{ flex:1; font-size:13px; line-height:1.4; text-transform:lowercase; }
+  .notif-item .txt b{ color:var(--accent); }
+  .notif-item .time{ font-size:10.5px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono'; }
+  .notif-item.unread{ background:rgba(var(--accent-rgb),0.05); margin:0 -20px; padding:12px 20px; }
+  .notif-actions{ display:flex; gap:6px; margin-top:8px; }
+  .notif-sheet-inner{ height:70vh; max-height:70vh; display:flex; flex-direction:column; }
+  .notif-sheet-head{ display:flex; align-items:center; justify-content:space-between; margin:0 0 14px; flex-shrink:0; }
+  .notif-sheet-head h3{ margin:0; }
+  .notif-clear-btn{ background:none; border:none; color:var(--muted); font-size:11px; font-family:'JetBrains Mono'; cursor:pointer; text-transform:lowercase; padding:4px 0; }
+  .notif-clear-btn:active{ color:var(--accent); }
+  .notif-scroll{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+  .profile-sheet-username{ font-family:'Metal Mania','Orbitron'; font-size:20px; text-align:center; margin:6px 0 20px; text-transform:lowercase; }
+  .profile-sheet-actions{ display:flex; flex-direction:column; gap:10px; }
+  .profile-sheet-actions button{ padding:13px; border-radius:10px; font-family:'Space Grotesk'; font-weight:600; font-size:13.5px;
+    cursor:pointer; text-transform:lowercase; border:1.5px solid var(--line-strong); background:var(--surface2); color:var(--ink); }
+  .profile-sheet-actions button.danger{ border-color:#7a1f2b; color:#e05a5a; }
+</style>
+</head>
+<body>
+<div class="app" id="appRoot" style="display:none">
+  <div class="grid-layer"></div>
+  <div class="scan-layer"></div>
+  <div class="vibe-layer" id="vibeLayer"></div>
+  <div class="script-layer" aria-hidden="true">
+    <span class="script">what to wear</span>
+    <span class="script">outfits.</span>
+    <span class="script">every season</span>
+  </div>
+
+  <header>
+    <svg class="gothic-ornament" viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none">
+<path d="M 18.0 0.0 Q 18.2 8.8 17.5 17.5 Q 15.1 26.2 15.9 35.0 Q 12.3 43.8 19.4 52.5 Q 16.2 61.2 12.9 70.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="15.9" cy="35.0" r="1.3" fill="currentColor"/><path d="M 12.9 65.8 L 17.1 70.0 L 12.9 74.2 L 8.7 70.0 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+<path d="M 34.0 0.0 Q 37.8 13.8 33.7 27.5 Q 27.6 41.2 30.6 55.0 Q 26.5 68.8 29.1 82.5 Q 32.5 96.2 32.8 110.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="33.7" cy="27.5" r="2.2" fill="currentColor"/><circle cx="29.1" cy="82.5" r="1.8" fill="currentColor"/><path d="M 32.8 110.0 L 32.8 115.0 M 29.8 112.0 L 35.8 112.0" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+<path d="M 52.0 0.0 Q 49.3 6.9 51.7 13.8 Q 48.8 20.6 54.4 27.5 Q 46.9 34.4 48.6 41.2 Q 49.8 48.1 55.6 55.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="54.4" cy="27.5" r="2.0" fill="currentColor"/><circle cx="55.6" cy="58.0" r="2.6" fill="currentColor"/>
+<path d="M 68.0 0.0 Q 67.9 16.2 66.6 32.5 Q 62.4 48.8 68.7 65.0 Q 64.0 81.2 69.9 97.5 Q 64.3 113.8 65.7 130.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="66.6" cy="32.5" r="1.9" fill="currentColor"/><circle cx="69.9" cy="97.5" r="1.7" fill="currentColor"/><path d="M 65.7 127.0 L 65.7 133.0 M 62.7 130.0 L 68.7 130.0 M 63.6 127.9 L 67.8 132.1 M 63.6 132.1 L 67.8 127.9" stroke="currentColor" stroke-width="0.8"/>
+<path d="M 90.0 0.0 Q 93.3 5.2 89.6 10.5 Q 92.4 15.8 90.3 21.0 Q 87.0 26.2 89.7 31.5 Q 90.0 36.8 88.4 42.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="88.4" cy="45.0" r="2.6" fill="currentColor"/>
+<path d="M 542.0 0.0 Q 547.7 8.8 541.9 17.5 Q 536.3 26.2 539.7 35.0 Q 538.9 43.8 539.9 52.5 Q 545.3 61.2 544.5 70.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="539.7" cy="35.0" r="1.4" fill="currentColor"/><path d="M 544.5 65.8 L 548.7 70.0 L 544.5 74.2 L 540.3 70.0 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+<path d="M 526.0 0.0 Q 526.9 13.8 526.0 27.5 Q 532.4 41.2 529.7 55.0 Q 524.6 68.8 524.0 82.5 Q 525.2 96.2 521.8 110.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="526.0" cy="27.5" r="1.8" fill="currentColor"/><circle cx="524.0" cy="82.5" r="1.8" fill="currentColor"/><path d="M 521.8 110.0 L 521.8 115.0 M 518.8 112.0 L 524.8 112.0" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+<path d="M 508.0 0.0 Q 510.0 6.9 508.1 13.8 Q 501.9 20.6 506.3 27.5 Q 507.9 34.4 504.7 41.2 Q 508.2 48.1 508.3 55.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="506.3" cy="27.5" r="2.2" fill="currentColor"/><circle cx="508.3" cy="58.0" r="2.6" fill="currentColor"/>
+<path d="M 492.0 0.0 Q 485.5 16.2 490.6 32.5 Q 491.8 48.8 493.9 65.0 Q 489.8 81.2 493.5 97.5 Q 486.7 113.8 489.0 130.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="490.6" cy="32.5" r="1.4" fill="currentColor"/><circle cx="493.5" cy="97.5" r="2.0" fill="currentColor"/><path d="M 489.0 127.0 L 489.0 133.0 M 486.0 130.0 L 492.0 130.0 M 486.9 127.9 L 491.1 132.1 M 486.9 132.1 L 491.1 127.9" stroke="currentColor" stroke-width="0.8"/>
+<path d="M 470.0 0.0 Q 465.3 5.2 470.7 10.5 Q 470.3 15.8 471.0 21.0 Q 471.4 26.2 470.7 31.5 Q 473.4 36.8 467.0 42.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="467.0" cy="45.0" r="2.6" fill="currentColor"/>
+<path d="M 150.0 0.0 Q 148.5 3.8 150.5 7.5 Q 155.4 11.2 151.1 15.0 Q 155.5 18.8 149.0 22.5 Q 145.1 26.2 149.5 30.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="149.5" cy="33.0" r="2.6" fill="currentColor"/>
+<path d="M 410.0 0.0 Q 411.3 3.8 410.5 7.5 Q 407.8 11.2 410.8 15.0 Q 405.1 18.8 411.2 22.5 Q 409.7 26.2 410.1 30.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="410.1" cy="33.0" r="2.6" fill="currentColor"/>
+</svg>
+    <div class="brand">
+      <svg class="sigil" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M24 18 C16 10 6 10 2 16 C6 20 14 20 20 22 C14 24 6 24 2 28 C6 34 16 34 24 26" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M24 18 C32 10 42 10 46 16 C42 20 34 20 28 22 C34 24 42 24 46 28 C42 34 32 34 24 26" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M24 4 C19 4 16 9 16 15 L16 30 C16 35 19 40 24 42 C29 40 32 35 32 30 L32 15 C32 9 29 4 24 4 Z" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M24 12 L24 34 M18 20 L30 20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="24" cy="20" r="2" fill="currentColor"/>
+      </svg>
+      <h1>outfits.</h1>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="notifBtn" aria-label="notifiche">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span class="badge" id="notifBadge" style="display:none">0</span>
+      </button>
+      <div class="profile-avatar" id="profileAvatarBtn">?</div>
+    </div>
+  </header>
+  
+  <div class="header-subtitles">
+    <p class="slogan">save, create, decide your outfits everytime, everywhere</p>
+    <p class="season-info" id="subtitle">loading…</p>
+  </div>
+  
+  <div class="barbed-divider"></div>
+
+  <div class="install-banner" id="installBanner" style="display:none">
+    <p id="installText">install the app: open your browser menu and choose "add to home screen"</p>
+    <button id="installBtn" style="display:none">install</button>
+    <button class="close-x" id="installClose">✕</button>
+  </div>
+
+  <div id="viewHome">
+  <nav class="mainnav">
+    <button id="navOutfits" class="active">outfits</button>
+    <button id="navPieces">pieces</button>
+    <button id="navWeek">week</button>
+  </nav>
+
+  <!-- Barra Cerca -->
+  <div class="search-box" id="searchContainer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input type="text" id="searchInput" placeholder="search by name…">
+  </div>
+
+  <main>
+    <div id="viewOutfits">
+      <div class="seasons" id="seasonTabs"></div>
+      <div id="board" class="board"></div>
+      <div id="emptyState" class="empty" style="display:none">
+        <span class="serif">no outfits found</span>
+        <span class="small">take or upload your first photo for this season</span>
+      </div>
+    </div>
+
+    <div id="viewPieces" style="display:none">
+      <button class="abbina-btn" id="openMixBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9a2 2 0 0 0-2 2v9"></path><path d="M14 17h9v-9"></path><rect x="3" y="3" width="9" height="9" rx="1"></rect></svg>
+        mix pieces
+      </button>
+      <div class="cat-chip-row" id="pieceCatFilter"></div>
+      <div id="piecesBoard" class="board"></div>
+      <div id="piecesEmpty" class="empty" style="display:none">
+        <span class="serif">no pieces found</span>
+        <span class="small">add t-shirts, sweatshirts, pants, shoes and accessories one at a time</span>
+      </div>
+    </div>
+
+    <div id="viewWeek" style="display:none">
+      <div id="calendarPanel">
+        <div class="month-nav">
+          <button id="prevMonthBtn" aria-label="previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+          <div class="month-title">
+            <span class="serif" id="monthLabel">—</span>
+            <span class="sub" id="monthSeasonLabel"></span>
+          </div>
+          <button id="nextMonthBtn" aria-label="next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+        <div id="weeksList"></div>
+        <button class="today-link" id="todayLink">go to this week</button>
+      </div>
+
+      <div id="weekDetailPanel" style="display:none">
+        <button class="back-link" id="backToCalendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>calendar</button>
+        <div class="week-header">
+          <span class="serif" id="weekRangeLabel">—</span>
+          <span class="sub" id="weekSeasonLabel"></span>
+        </div>
+        <div class="week" id="weekList"></div>
+        <button class="regen" id="regenBtn">reshuffle the week</button>
+      </div>
+    </div>
+  </main>
+  </div>
+
+  <div id="viewFriends" style="display:none">
+    <div class="friends-search">
+      <div class="search-box" style="margin:0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="friendSearchInput" placeholder="search by username…">
+      </div>
+      <div id="friendSearchResults"></div>
+    </div>
+
+    <div class="friend-link-row">
+      <button id="copyFriendLinkBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        copy friend link
+      </button>
+      <button id="swagRankEntryBtn">
+        <span class="mono-emoji">🏆</span> swag rank <span class="swagrank-badge" id="mySwagWeekCount">0</span>
+      </button>
+    </div>
+
+    <div id="incomingRequestsSection" style="display:none">
+      <div class="section-label">requests received</div>
+      <div id="incomingRequestsList"></div>
+    </div>
+
+    <div id="outgoingRequestsSection" style="display:none">
+      <div class="section-label">requests sent</div>
+      <div id="outgoingRequestsList"></div>
+    </div>
+
+    <div class="section-label" id="friendPostsLabel" style="display:none">today's outfits — swipe →</div>
+    <div class="friend-posts-scroll" id="friendPostsScroll"></div>
+
+    <div class="section-label">your friends</div>
+    <div id="friendsList"></div>
+    <div class="empty" id="friendsEmpty" style="display:none">
+      <span class="serif">no friends yet</span>
+      <span class="small">search by username or share your link</span>
+    </div>
+  </div>
+
+  <button class="fab" id="addBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"></circle><path d="M9 3h6l2 3h3a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1h3z"></path></svg>
+    <span id="addBtnLabel">add outfit</span>
+  </button>
+
+  <!-- Input file separati per Scatta Foto e Galleria -->
+  <input type="file" id="fileInputCamera" accept="image/*" capture="environment">
+  <input type="file" id="fileInputGallery" accept="image/*">
+
+  <input type="file" id="fileInputPieceCamera" accept="image/*" capture="environment">
+  <input type="file" id="fileInputPieceGallery" accept="image/*">
+</div>
+
+<div class="bottom-tabbar" id="bottomTabbar" style="display:none">
+  <div class="bottom-tabbar-inner">
+    <button class="tabbar-btn active" id="mainTabHome">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+      home
+    </button>
+    <button class="tabbar-btn" id="mainTabFriends" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      friends
+      <span class="tabbar-badge" id="friendsTabBadge" style="display:none">0</span>
+    </button>
+  </div>
+</div>
+
+<!-- gate: google sign-in -->
+<div class="gate" id="authGate" style="display:none">
+  <svg class="sigil" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M24 18 C16 10 6 10 2 16 C6 20 14 20 20 22 C14 24 6 24 2 28 C6 34 16 34 24 26" stroke="currentColor" stroke-width="1.3"/>
+    <path d="M24 18 C32 10 42 10 46 16 C42 20 34 20 28 22 C34 24 42 24 46 28 C42 34 32 34 24 26" stroke="currentColor" stroke-width="1.3"/>
+    <path d="M24 4 C19 4 16 9 16 15 L16 30 C16 35 19 40 24 42 C29 40 32 35 32 30 L32 15 C32 9 29 4 24 4 Z" stroke="currentColor" stroke-width="1.4"/>
+    <path d="M24 12 L24 34 M18 20 L30 20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="24" cy="20" r="2" fill="currentColor"/>
+  </svg>
+  <h1>outfits.</h1>
+  <p>your digital wardrobe. sign in to save your outfits and let your friends see them too.</p>
+  <button class="google-btn disabled" id="googleSignInBtn">
+    <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.5 29.5 3.5 24 3.5 12.7 3.5 3.5 12.7 3.5 24S12.7 44.5 24 44.5 44.5 35.3 44.5 24c0-1.2-.1-2.4-.3-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 6.5 29.5 4.5 24 4.5c-7.7 0-14.3 4.4-17.7 10.2z"/><path fill="#4CAF50" d="M24 44.5c5.4 0 10.3-1.8 14-4.9l-6.5-5.4c-2.1 1.5-4.8 2.4-7.5 2.4-5.3 0-9.7-3.3-11.3-8l-6.6 5.1C9.6 40 16.3 44.5 24 44.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.5 5.4C41.5 35.9 44.5 30.4 44.5 24c0-1.2-.1-2.4-.3-3.5z"/></svg>
+    sign in with google
+  </button>
+  <div class="consent-row">
+    <input type="checkbox" id="privacyConsentCheck">
+    <label for="privacyConsentCheck">i have read and accept the <a id="privacyGateLink">privacy policy</a></label>
+  </div>
+</div>
+
+<!-- gate: username choice (first login only) -->
+<div class="gate" id="usernameGate" style="display:none">
+  <h1>choose your username</h1>
+  <p>this is how friends will find you. you won't be able to change it later without recreating it.</p>
+  <div class="username-input-wrap">
+    <input type="text" id="usernameInput" placeholder="your_username" maxlength="20" autocapitalize="off" autocorrect="off">
+    <div class="username-status" id="usernameStatus"></div>
+  </div>
+  <button class="confirm-btn" id="confirmUsernameBtn">create account</button>
+  <button class="signout-link" id="cancelUsernameBtn">sign out</button>
+</div>
+
+<!-- profile menu -->
+<div class="sheet" id="profileSheet">
+  <div class="sheet-inner">
+    <div class="profile-sheet-username" id="profileSheetUsername">—</div>
+    <div class="profile-sheet-actions">
+      <button id="signOutBtn">sign out</button>
+      <button class="danger" id="deleteAccountBtn">delete account</button>
+      <button class="profile-privacy-link" id="profilePrivacyLink" style="margin-top:6px">privacy policy</button>
+      <button id="closeProfileSheetBtn">close</button>
+    </div>
+  </div>
+</div>
+
+<!-- privacy policy -->
+<div class="sheet" id="privacySheet">
+  <div class="sheet-inner privacy-sheet-inner">
+    <div class="privacy-sheet-head">
+      <h3>privacy policy</h3>
+      <button class="privacy-close-btn" id="privacyCloseBtn">close</button>
+    </div>
+    <div class="privacy-body">
+      <h4>what this is</h4>
+      <p>outfits. is a small personal-project app for organizing your wardrobe and sharing your outfit of the day with friends you choose to connect with. this policy explains what data the app handles and why.</p>
+
+      <h4>account & sign-in</h4>
+      <p>you sign in with your google account through firebase authentication. we don't see or store your google password — google handles the login itself. we store your google account id and the username you pick, so the app knows who you are and so friends can find you.</p>
+
+      <h4>photos you upload</h4>
+      <p>when you add clothing pieces or outfits, the photos you take or choose from your gallery are uploaded and stored so the app can show them back to you, let you build outfits from your pieces, and — only for the specific outfit you assign to a day — show that photo to the friends you've added.</p>
+
+      <h4>what your friends can see</h4>
+      <ul>
+        <li>your username</li>
+        <li>the outfit you've set for the current day, until you change or remove it</li>
+        <li>whether they (and other mutual friends) have "swagged" that outfit, and who</li>
+      </ul>
+      <p>friends can only see this after you've both accepted a friend request. people you haven't added can't see any of your outfits or pieces.</p>
+
+      <h4>notifications</h4>
+      <p>the app stores small notifications about things like friend requests and swags so it can show them to you in the notifications panel. you can delete them at any time from that panel.</p>
+
+      <h4>where data is stored</h4>
+      <p>all data is stored in google firebase (cloud firestore and firebase authentication), google's cloud infrastructure. we don't sell your data, we don't show ads, and we don't share your data with any third party beyond the google/firebase infrastructure the app runs on.</p>
+
+      <h4>how long we keep it</h4>
+      <p>your data is kept for as long as your account exists. if you delete your account from the profile menu, your pieces, outfits, week plans, friend connections, notifications and outfit-of-the-day posts are removed from our database right away.</p>
+
+      <h4>your choices</h4>
+      <p>you can remove a friend, delete individual pieces or outfits, clear your notifications, or delete your entire account at any time from within the app — no need to contact anyone.</p>
+
+      <h4>changes to this policy</h4>
+      <p>if this policy changes, the updated version will simply replace this one — this is a small, evolving personal project rather than a company with a legal department.</p>
+    </div>
+  </div>
+</div>
+
+<!-- swag rank -->
+<div class="sheet" id="swagRankSheet">
+  <div class="sheet-inner notif-sheet-inner">
+    <div class="privacy-sheet-head">
+      <h3><span class="mono-emoji">🏆</span> swag rank — this week</h3>
+      <button class="privacy-close-btn" id="swagRankCloseBtn">close</button>
+    </div>
+    <div id="swagRankBody" class="notif-scroll"></div>
+  </div>
+</div>
+
+<!-- friend request via link -->
+<div class="sheet" id="linkRequestSheet">
+  <div class="sheet-inner">
+    <h3>add as friend?</h3>
+    <div class="search-result-row" style="margin-bottom:16px">
+      <div class="mini-avatar" id="linkRequestAvatar">?</div>
+      <div class="uname" id="linkRequestUsername">—</div>
+    </div>
+    <div class="profile-sheet-actions">
+      <button id="linkRequestSendBtn">send request</button>
+      <button id="linkRequestCancelBtn">cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- notifications -->
+<div class="sheet" id="notifSheet">
+  <div class="sheet-inner notif-sheet-inner">
+    <div class="notif-sheet-head">
+      <h3>notifications</h3>
+      <button class="notif-clear-btn" id="notifClearBtn">clear all</button>
+    </div>
+    <div id="notifList" class="notif-scroll"></div>
+    <div class="empty" id="notifEmpty" style="display:none; margin-top:10px">
+      <span class="small">no notifications yet</span>
+    </div>
+  </div>
+</div>
+
+<!-- who swagged -->
+<div class="sheet" id="swagListSheet">
+  <div class="sheet-inner" style="max-height:60vh; overflow-y:auto">
+    <h3>who swagged this</h3>
+    <div id="swagListBody"></div>
+  </div>
+</div>
+
+<!-- friend's outfit, enlarged view -->
+<div class="modal-overlay" id="friendOutfitModalOverlay">
+  <div class="modal">
+    <img id="friendOutfitModalImg" src="">
+    <div class="modal-title-display" id="friendOutfitModalTitle"></div>
+    <div class="modal-actions">
+      <button class="btn-close" id="friendOutfitModalClose" style="flex:1; min-width:100%;">close</button>
+    </div>
+  </div>
+</div>
+
+<!-- mix view, full screen -->
+<div class="fullview" id="viewMix" style="display:none">
+  <div class="fullview-header">
+    <button class="back-link" id="closeMixBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+    <h2 class="serif" id="mixTitle">mix</h2>
+  </div>
+  <div class="fullview-body" id="mixBody">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="mixSearchInput" placeholder="search pieces by name…">
+    </div>
+    <div class="selection-hint" id="mixHint">tap the pieces you want to combine, then pick one or more seasons</div>
+    <div class="selection-preview" id="mixPreview"></div>
+    <div id="mixSeasonSection">
+      <div class="cat-label" style="margin-top:22px">seasons</div>
+      <div class="season-multi-select" id="mixSeasonTabs"></div>
+    </div>
+    <div class="cat-label" id="mixEditSeasonLabel" style="margin-top:22px; display:none"></div>
+    <div id="mixCategories"></div>
+  </div>
+  <button class="fab" id="confirmMixBtn" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+    <span id="confirmMixBtnLabel">add to outfits</span>
+  </button>
+</div>
+
+<!-- Modal Selezione Fonte Foto (Fotocamera / Galleria) -->
+<div class="sheet" id="photoSourceSheet">
+  <div class="sheet-inner">
+    <h3>add photo</h3>
+    <div class="source-options">
+      <button class="source-btn" id="btnSourceCamera">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        take photo now
+      </button>
+      <button class="source-btn" id="btnSourceGallery">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        choose from gallery / files
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- pick a category before uploading a piece -->
+<div class="sheet" id="categorySheet">
+  <div class="sheet-inner">
+    <h3>what are you adding?</h3>
+    <div class="sheet-chips" id="categorySheetChips"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <img id="modalImg" src="">
+    <div class="modal-title-display" id="modalTitle"></div>
+    <div class="modal-actions">
+      <button class="btn-close" id="modalClose">close</button>
+      <button class="btn-rename" id="modalRename">rename</button>
+      <button class="btn-rename" id="modalEdit" style="background:var(--surface2); color:var(--ink); border:1.5px solid var(--line-strong) !important;">edit</button>
+      <button class="btn-delete" id="modalDelete">delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pieceModalOverlay">
+  <div class="modal">
+    <img id="pieceModalImg" src="">
+    <div class="modal-title-display" id="pieceModalTitle"></div>
+    <div class="modal-actions">
+      <button class="btn-close" id="pieceModalClose">close</button>
+      <button class="btn-rename" id="pieceModalRename">rename</button>
+      <button class="btn-delete" id="pieceModalDelete">delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Selezione Outfit Settimanale -->
+<div class="modal-overlay" id="pickerModalOverlay">
+  <div class="modal">
+    <div class="modal-title-display" style="text-align:left; margin-top:0;">select outfit</div>
+    <div id="pickerGrid" class="picker-grid"></div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-close" id="pickerModalClose">cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SEASONS = [
+  { id:'spring', label:'spring', months:[2,3,4] },
+  { id:'summer', label:'summer', months:[5,6,7] },
+  { id:'autumn', label:'autumn', months:[8,9,10] },
+  { id:'winter', label:'winter', months:[11,0,1] },
+];
+const DAY_NAMES = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+const MONTH_NAMES = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+const MONTH_SHORT = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+// Sostituito top con t-shirts e sweatshirts
+const DEFAULT_CATEGORIES = ['t-shirts','sweatshirts','pants','belt','shoes','jacket','accessory'];
+let CATEGORIES = [...DEFAULT_CATEGORIES];
+
+function currentSeason(){
+  const m = new Date().getMonth();
+  return SEASONS.find(s => s.months.includes(m)).id;
+}
+function seasonMeta(id){ return SEASONS.find(s=>s.id===id); }
+function seasonForMonth(m){ return SEASONS.find(s=>s.months.includes(m)).id; }
+
+let activeSeason = currentSeason();
+let currentModalOutfit = null;
+let currentModalPiece = null;
+let pendingPieceCategory = null;
+let pieceFilterCategory = 'all';
+let searchQuery = '';
+let calendarMonth = new Date(); calendarMonth.setDate(1);
+let currentWeekMonday = null;
+window.getCurrentWeekMonday = ()=> currentWeekMonday;
+let currentWeekSeason = null;
+
+// mixSelection holds an array of selected pieces for each category
+let mixSelection = {}; 
+// mixSeasons contiene un Set delle stagioni selezionate
+let mixSeasons = new Set([currentSeason()]);
+let dayPickerTargetIndex = null;
+
+const root = document.documentElement;
+
+function applyThemeWhite(){
+  root.style.setProperty('--accent', '#F5F4F0');
+  root.style.setProperty('--accent-rgb', '245,244,240');
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000000');
+}
+
+function applyVibe(seasonId){
+  document.body.className = document.body.className.replace(/vibe-\S+/g,'').trim();
+  document.body.classList.add('vibe-'+seasonId);
+  renderVibeParticles(seasonId);
+}
+function renderVibeParticles(seasonId){
+  const layer = document.getElementById('vibeLayer');
+  layer.innerHTML = '';
+  if(seasonId === 'summer'){
+    const glow = document.createElement('div');
+    glow.className = 'vibe-glow';
+    layer.appendChild(glow);
+    return;
+  }
+  const type = seasonId === 'spring' ? 'petal' : seasonId === 'autumn' ? 'leaf' : seasonId === 'winter' ? 'snow' : null;
+  if(!type) return;
+  const count = 7;
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'vibe-particle ' + type;
+    const left = Math.random()*100;
+    const dur = 9 + Math.random()*8;
+    const delay = Math.random()*-14;
+    const drift = (Math.random()*60-30).toFixed(0)+'px';
+    const rot = (Math.random()*180+40).toFixed(0)+'deg';
+    p.style.left = left+'%';
+    p.style.animationDuration = dur+'s';
+    p.style.animationDelay = delay+'s';
+    p.style.setProperty('--drift', drift);
+    p.style.setProperty('--rot', rot);
+    layer.appendChild(p);
+  }
+}
+
+// --- local storage (indexeddb): works offline, in the phone's browser ---
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open('outfitsDB', 3);
+    req.onupgradeneeded = e=>{
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains('outfits')){
+        const store = db.createObjectStore('outfits', { keyPath:'id' });
+        store.createIndex('season', 'season');
+      }
+      if(!db.objectStoreNames.contains('weekplans')){
+        db.createObjectStore('weekplans', { keyPath:'key' });
+      }
+      if(!db.objectStoreNames.contains('pieces')){
+        const pieceStore = db.createObjectStore('pieces', { keyPath:'id' });
+        pieceStore.createIndex('category', 'category');
+      }
+      if(!db.objectStoreNames.contains('customCategories')){
+        db.createObjectStore('customCategories', { keyPath:'id' });
+      }
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function loadOutfits(seasonId){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readonly');
+    const req = tx.objectStore('outfits').index('season').getAll(seasonId);
+    req.onsuccess = ()=> resolve(req.result.sort((a,b)=>a.addedAt-b.addedAt));
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function addOutfitToDB(seasonId, dataUrl, name, pieceIds){
+  const db = await openDB();
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readwrite');
+    tx.objectStore('outfits').add({ id, season: seasonId, dataUrl, name: name || '', pieceIds: pieceIds || [], addedAt: Date.now() });
+    tx.oncomplete = ()=> resolve(id);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function updateOutfitName(id, name){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readwrite');
+    const store = tx.objectStore('outfits');
+    const getReq = store.get(id);
+    getReq.onsuccess = ()=>{
+      const data = getReq.result;
+      if(!data) return resolve();
+      data.name = name;
+      store.put(data);
+    };
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function updateOutfitContent(id, dataUrl, pieceIds, season){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readwrite');
+    const store = tx.objectStore('outfits');
+    const getReq = store.get(id);
+    getReq.onsuccess = ()=>{
+      const data = getReq.result;
+      if(!data) return resolve();
+      data.dataUrl = dataUrl;
+      data.pieceIds = pieceIds || [];
+      if(season) data.season = season;
+      store.put(data);
+    };
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function getOutfitById(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readonly');
+    const req = tx.objectStore('outfits').get(id);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function updateOutfitSeasonOnly(id, season){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readwrite');
+    const store = tx.objectStore('outfits');
+    const getReq = store.get(id);
+    getReq.onsuccess = ()=>{
+      const data = getReq.result;
+      if(!data) return resolve();
+      data.season = season;
+      store.put(data);
+    };
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function getPieceById(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('pieces', 'readonly');
+    const req = tx.objectStore('pieces').get(id);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function deleteOutfitFromDB(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('outfits', 'readwrite');
+    tx.objectStore('outfits').delete(id);
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function getWeekPlan(key){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('weekplans', 'readonly');
+    const req = tx.objectStore('weekplans').get(key);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function setWeekPlan(key, seasonId, picks){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('weekplans', 'readwrite');
+    tx.objectStore('weekplans').put({ key, season: seasonId, picks });
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function loadPieces(category){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('pieces', 'readonly');
+    const store = tx.objectStore('pieces');
+    const req = (category && category !== 'all') ? store.index('category').getAll(category) : store.getAll();
+    req.onsuccess = ()=> resolve(req.result.sort((a,b)=>b.addedAt-a.addedAt));
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function addPieceToDB(category, dataUrl, name){
+  const db = await openDB();
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('pieces', 'readwrite');
+    tx.objectStore('pieces').add({ id, category, dataUrl, name: name || '', addedAt: Date.now() });
+    tx.oncomplete = ()=> resolve(id);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function updatePieceName(id, name){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('pieces', 'readwrite');
+    const store = tx.objectStore('pieces');
+    const getReq = store.get(id);
+    getReq.onsuccess = ()=>{
+      const data = getReq.result;
+      if(!data) return resolve();
+      data.name = name;
+      store.put(data);
+    };
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function deletePieceFromDB(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('pieces', 'readwrite');
+    tx.objectStore('pieces').delete(id);
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function loadCustomCategories(){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('customCategories', 'readonly');
+    const req = tx.objectStore('customCategories').getAll();
+    req.onsuccess = ()=> resolve(req.result.sort((a,b)=>a.addedAt-b.addedAt));
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function addCustomCategoryToDB(label){
+  const db = await openDB();
+  const id = label.trim().toLowerCase();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction('customCategories', 'readwrite');
+    tx.objectStore('customCategories').put({ id, addedAt: Date.now() });
+    tx.oncomplete = ()=> resolve(id);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function refreshCategories(){
+  const custom = await loadCustomCategories();
+  CATEGORIES = [...DEFAULT_CATEGORIES, ...custom.map(c=>c.id)];
+}
+
+async function wipeLocalWardrobe(){
+  const db = await openDB();
+  return new Promise((resolve)=>{
+    const tx = db.transaction(['outfits','pieces','weekplans','customCategories'], 'readwrite');
+    tx.objectStore('outfits').clear();
+    tx.objectStore('pieces').clear();
+    tx.objectStore('weekplans').clear();
+    tx.objectStore('customCategories').clear();
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> resolve();
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+// --- outfits view ---
+function renderSeasonTabs(){
+  const wrap = document.getElementById('seasonTabs');
+  wrap.innerHTML = '';
+  SEASONS.forEach(s=>{
+    const btn = document.createElement('button');
+    btn.className = 'season-tab' + (s.id===activeSeason ? ' active' : '');
+    btn.innerHTML = `<span class="dot"></span>${s.label}`;
+    btn.onclick = ()=>{ activeSeason = s.id; applyVibe(activeSeason); renderSeasonTabs(); renderBoard(); };
+    wrap.appendChild(btn);
+  });
+}
+
+async function renderBoard(){
+  const board = document.getElementById('board');
+  const empty = document.getElementById('emptyState');
+  let list = await loadOutfits(activeSeason);
+  
+  if(searchQuery.trim()){
+    const q = searchQuery.toLowerCase().trim();
+    list = list.filter(o => (o.name && o.name.toLowerCase().includes(q)));
+  }
+
+  board.innerHTML = '';
+  if(list.length === 0){
+    empty.style.display = 'block';
+    board.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  board.style.display = 'grid';
+  list.slice().reverse().forEach(item=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const img = document.createElement('img');
+    img.src = item.dataUrl;
+    
+    card.appendChild(img);
+    if(item.name){
+      const title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = item.name.toLowerCase();
+      card.appendChild(title);
+    }
+    const when = document.createElement('div');
+    when.className = 'when';
+    when.textContent = new Date(item.addedAt).toLocaleDateString('en-GB', {day:'numeric', month:'short'}).toLowerCase();
+    card.appendChild(when);
+    card.onclick = ()=> openModal(item);
+    board.appendChild(card);
+  });
+}
+
+function openModal(item){
+  currentModalOutfit = item;
+  document.getElementById('modalImg').src = item.dataUrl;
+  document.getElementById('modalTitle').textContent = (item.name || '').toLowerCase();
+  document.getElementById('modalOverlay').classList.add('show');
+}
+document.getElementById('modalClose').onclick = ()=>{
+  document.getElementById('modalOverlay').classList.remove('show');
+};
+document.getElementById('modalRename').onclick = async ()=>{
+  if(!currentModalOutfit) return;
+  const newName = prompt('give a new name to this outfit:', currentModalOutfit.name || '');
+  if(newName !== null){
+    currentModalOutfit.name = newName.trim().toLowerCase();
+    await updateOutfitName(currentModalOutfit.id, currentModalOutfit.name);
+    document.getElementById('modalTitle').textContent = currentModalOutfit.name;
+    renderBoard();
+    showToast('outfit renamed');
+  }
+};
+document.getElementById('modalDelete').onclick = async ()=>{
+  if(!currentModalOutfit) return;
+  await deleteOutfitFromDB(currentModalOutfit.id);
+  document.getElementById('modalOverlay').classList.remove('show');
+  renderBoard();
+  showToast('outfit deleted');
+};
+document.getElementById('modalEdit').onclick = ()=>{
+  if(!currentModalOutfit) return;
+  document.getElementById('modalOverlay').classList.remove('show');
+  openMix(currentModalOutfit);
+};
+
+function resizeImage(file, maxDim){
+  maxDim = maxDim || 900;
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let {width, height} = img;
+        if(width > height && width > maxDim){ height = height*(maxDim/width); width = maxDim; }
+        else if(height > maxDim){ width = width*(maxDim/height); height = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// --- Gestione Selezione Sorgente Foto (Fotocamera / Galleria) ---
+let currentUploadTarget = 'outfit';
+
+document.getElementById('addBtn').onclick = ()=>{
+  if(currentTab === 'pieces'){
+    if(pieceFilterCategory === 'all'){
+      openCategorySheet();
+    } else {
+      pendingPieceCategory = pieceFilterCategory;
+      currentUploadTarget = 'piece';
+      openPhotoSourceSheet();
+    }
+  } else {
+    currentUploadTarget = 'outfit';
+    openPhotoSourceSheet();
+  }
+};
+
+function openPhotoSourceSheet(){
+  document.getElementById('photoSourceSheet').classList.add('show');
+}
+
+document.getElementById('photoSourceSheet').onclick = (e)=>{
+  if(e.target.id === 'photoSourceSheet') document.getElementById('photoSourceSheet').classList.remove('show');
+};
+
+document.getElementById('btnSourceCamera').onclick = ()=>{
+  document.getElementById('photoSourceSheet').classList.remove('show');
+  if(currentUploadTarget === 'outfit'){
+    document.getElementById('fileInputCamera').click();
+  } else {
+    document.getElementById('fileInputPieceCamera').click();
+  }
+};
+
+document.getElementById('btnSourceGallery').onclick = ()=>{
+  document.getElementById('photoSourceSheet').classList.remove('show');
+  if(currentUploadTarget === 'outfit'){
+    document.getElementById('fileInputGallery').click();
+  } else {
+    document.getElementById('fileInputPieceGallery').click();
+  }
+};
+
+async function handleOutfitFileUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  
+  const name = prompt("enter a name for this outfit (optional):");
+  showToast('saving…');
+  try{
+    const dataUrl = await resizeImage(file);
+    await addOutfitToDB(activeSeason, dataUrl, name ? name.trim().toLowerCase() : '');
+    renderBoard();
+    showToast('outfit added to ' + seasonMeta(activeSeason).label);
+  }catch(err){
+    console.error(err);
+    showToast("couldn't save the photo");
+  }
+  e.target.value = '';
+}
+
+document.getElementById('fileInputCamera').onchange = handleOutfitFileUpload;
+document.getElementById('fileInputGallery').onchange = handleOutfitFileUpload;
+
+// --- single pieces ---
+function openCategorySheet(){
+  const wrap = document.getElementById('categorySheetChips');
+  wrap.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip';
+    chip.textContent = cat;
+    chip.onclick = ()=>{
+      pendingPieceCategory = cat;
+      document.getElementById('categorySheet').classList.remove('show');
+      currentUploadTarget = 'piece';
+      openPhotoSourceSheet();
+    };
+    wrap.appendChild(chip);
+  });
+  document.getElementById('categorySheet').classList.add('show');
+}
+document.getElementById('categorySheet').onclick = (e)=>{
+  if(e.target.id === 'categorySheet') document.getElementById('categorySheet').classList.remove('show');
+};
+
+async function handlePieceFileUpload(e){
+  const file = e.target.files[0];
+  if(!file || !pendingPieceCategory) return;
+  
+  const name = prompt(`enter a name for this ${pendingPieceCategory} (optional):`);
+  showToast('saving…');
+  try{
+    const dataUrl = await resizeImage(file, 700);
+    await addPieceToDB(pendingPieceCategory, dataUrl, name ? name.trim().toLowerCase() : '');
+    renderPieceFilter();
+    renderPiecesBoard();
+    showToast(pendingPieceCategory + ' added to your pieces');
+  }catch(err){
+    console.error(err);
+    showToast("couldn't save the photo");
+  }
+  pendingPieceCategory = null;
+  e.target.value = '';
+}
+
+document.getElementById('fileInputPieceCamera').onchange = handlePieceFileUpload;
+document.getElementById('fileInputPieceGallery').onchange = handlePieceFileUpload;
+
+async function renderPieceFilter(){
+  const wrap = document.getElementById('pieceCatFilter');
+  const all = await loadPieces('all');
+  const counts = {};
+  CATEGORIES.forEach(c=> counts[c] = 0);
+  all.forEach(p=> counts[p.category] = (counts[p.category]||0)+1);
+  wrap.innerHTML = '';
+  const allChip = document.createElement('button');
+  allChip.className = 'cat-chip' + (pieceFilterCategory==='all' ? ' selected' : '');
+  allChip.textContent = 'all (' + all.length + ')';
+  allChip.onclick = ()=>{ pieceFilterCategory = 'all'; renderPieceFilter(); renderPiecesBoard(); };
+  wrap.appendChild(allChip);
+  CATEGORIES.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (pieceFilterCategory===cat ? ' selected' : '') + (counts[cat]===0 ? ' count0' : '');
+    chip.textContent = cat + ' (' + counts[cat] + ')';
+    chip.onclick = ()=>{ pieceFilterCategory = cat; renderPieceFilter(); renderPiecesBoard(); };
+    wrap.appendChild(chip);
+  });
+  const addChip = document.createElement('button');
+  addChip.className = 'cat-chip-add';
+  addChip.setAttribute('aria-label','create category');
+  addChip.textContent = '+';
+  addChip.onclick = async ()=>{
+    const name = prompt('name of the new category:');
+    if(!name || !name.trim()) return;
+    const id = name.trim().toLowerCase();
+    if(CATEGORIES.includes(id)){
+      showToast('category already exists');
+      return;
+    }
+    await addCustomCategoryToDB(id);
+    await refreshCategories();
+    renderPieceFilter();
+    renderPiecesBoard();
+    showToast('category "' + id + '" created');
+  };
+  wrap.appendChild(addChip);
+}
+
+async function renderPiecesBoard(){
+  const board = document.getElementById('piecesBoard');
+  const empty = document.getElementById('piecesEmpty');
+  let list = await loadPieces(pieceFilterCategory);
+  
+  if(searchQuery.trim()){
+    const q = searchQuery.toLowerCase().trim();
+    list = list.filter(p => (p.name && p.name.toLowerCase().includes(q)));
+  }
+
+  board.innerHTML = '';
+  if(list.length === 0){
+    empty.style.display = 'block';
+    board.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  board.style.display = 'grid';
+  list.forEach(item=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<span class="tag">${item.category}</span>`;
+    const img = document.createElement('img');
+    img.src = item.dataUrl;
+    card.appendChild(img);
+    if(item.name){
+      const title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = item.name.toLowerCase();
+      card.appendChild(title);
+    }
+    card.onclick = ()=> openPieceModal(item);
+    board.appendChild(card);
+  });
+}
+
+function openPieceModal(item){
+  currentModalPiece = item;
+  document.getElementById('pieceModalImg').src = item.dataUrl;
+  document.getElementById('pieceModalTitle').textContent = (item.name || '').toLowerCase();
+  document.getElementById('pieceModalOverlay').classList.add('show');
+}
+document.getElementById('pieceModalClose').onclick = ()=>{
+  document.getElementById('pieceModalOverlay').classList.remove('show');
+};
+document.getElementById('pieceModalRename').onclick = async ()=>{
+  if(!currentModalPiece) return;
+  const newName = prompt('give a new name to this piece:', currentModalPiece.name || '');
+  if(newName !== null){
+    currentModalPiece.name = newName.trim().toLowerCase();
+    await updatePieceName(currentModalPiece.id, currentModalPiece.name);
+    document.getElementById('pieceModalTitle').textContent = currentModalPiece.name;
+    renderPiecesBoard();
+    showToast('piece renamed');
+  }
+};
+document.getElementById('pieceModalDelete').onclick = async ()=>{
+  if(!currentModalPiece) return;
+  await deletePieceFromDB(currentModalPiece.id);
+  document.getElementById('pieceModalOverlay').classList.remove('show');
+  renderPieceFilter();
+  renderPiecesBoard();
+  showToast('piece deleted');
+};
+
+// --- mix ---
+document.getElementById('openMixBtn').onclick = ()=> openMix(null);
+document.getElementById('closeMixBtn').onclick = closeMix;
+
+let editingOutfitId = null;
+let editingOutfitOriginalSeason = null;
+let editingOutfitName = '';
+let mixSearchQuery = '';
+
+document.getElementById('mixSearchInput').oninput = (e)=>{
+  mixSearchQuery = e.target.value.toLowerCase();
+  renderMixCategories();
+};
+
+async function openMix(editOutfit){
+  mixSelection = {};
+  mixSearchQuery = '';
+  document.getElementById('mixSearchInput').value = '';
+  editingOutfitId = editOutfit ? editOutfit.id : null;
+
+  if(editOutfit){
+    mixSeasons = new Set([editOutfit.season]);
+    editingOutfitOriginalSeason = editOutfit.season;
+    editingOutfitName = editOutfit.name || '';
+    document.getElementById('mixTitle').textContent = 'edit outfit';
+    document.getElementById('confirmMixBtnLabel').textContent = 'save changes';
+    document.getElementById('mixSeasonSection').style.display = 'block';
+    document.getElementById('mixEditSeasonLabel').style.display = 'none';
+    const ids = editOutfit.pieceIds || [];
+    for(const pid of ids){
+      const piece = await getPieceById(pid);
+      if(!piece) continue;
+      if(!mixSelection[piece.category]) mixSelection[piece.category] = [];
+      mixSelection[piece.category].push(piece);
+    }
+  } else {
+    mixSeasons = new Set([activeSeason || currentSeason()]);
+    document.getElementById('mixTitle').textContent = 'mix';
+    document.getElementById('confirmMixBtnLabel').textContent = 'add to outfits';
+    document.getElementById('mixSeasonSection').style.display = 'block';
+    document.getElementById('mixEditSeasonLabel').style.display = 'none';
+  }
+
+  document.getElementById('viewMix').style.display = 'flex';
+  renderMixSeasonTabs();
+  await renderMixCategories();
+  renderMixPreview();
+}
+function closeMix(){
+  document.getElementById('viewMix').style.display = 'none';
+  editingOutfitId = null;
+}
+
+function renderMixSeasonTabs(){
+  const wrap = document.getElementById('mixSeasonTabs');
+  wrap.innerHTML = '';
+  SEASONS.forEach(s=>{
+    const btn = document.createElement('button');
+    const isSelected = mixSeasons.has(s.id);
+    btn.className = 'season-checkbox-btn' + (isSelected ? ' selected' : '');
+    btn.innerHTML = `${isSelected ? '✓ ' : ''}${s.label}`;
+    btn.onclick = ()=>{
+      if(mixSeasons.has(s.id)){
+        if(mixSeasons.size > 1){ // Mantiene almeno una stagione selezionata
+          mixSeasons.delete(s.id);
+        }
+      } else {
+        mixSeasons.add(s.id);
+      }
+      renderMixSeasonTabs();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+async function renderMixCategories(){
+  const wrap = document.getElementById('mixCategories');
+  wrap.innerHTML = '';
+  const q = mixSearchQuery.trim();
+  for(const cat of CATEGORIES){
+    let pieces = await loadPieces(cat);
+    if(q) pieces = pieces.filter(p => p.name && p.name.toLowerCase().includes(q));
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+    const label = document.createElement('div');
+    label.className = 'cat-label';
+    label.textContent = cat;
+    section.appendChild(label);
+    if(pieces.length === 0){
+      const p = document.createElement('div');
+      p.className = 'piece-empty-cat';
+      p.textContent = q ? 'no matches' : 'no pieces uploaded';
+      section.appendChild(p);
+    } else {
+      const scroll = document.createElement('div');
+      scroll.className = 'piece-scroll';
+      pieces.forEach(piece=>{
+        const img = document.createElement('img');
+        img.className = 'piece-thumb';
+        img.src = piece.dataUrl;
+        
+        // Check if the piece is already selected (supports multi-select)
+        const currentCatPicks = mixSelection[cat] || [];
+        const isSel = currentCatPicks.some(p => p.id === piece.id);
+        if(isSel) img.classList.add('selected');
+
+        img.onclick = ()=>{
+          if(!mixSelection[cat]) mixSelection[cat] = [];
+          const idx = mixSelection[cat].findIndex(p => p.id === piece.id);
+          if(idx >= 0){
+            mixSelection[cat].splice(idx, 1);
+          } else {
+            mixSelection[cat].push(piece);
+          }
+          renderMixCategories();
+          renderMixPreview();
+        };
+        scroll.appendChild(img);
+      });
+      section.appendChild(scroll);
+    }
+    wrap.appendChild(section);
+  }
+}
+
+function renderMixPreview(){
+  const preview = document.getElementById('mixPreview');
+  const hint = document.getElementById('mixHint');
+  const confirmBtn = document.getElementById('confirmMixBtn');
+  
+  // Raccoglie tutti i capi selezionati tra tutte le categorie
+  const selected = Object.values(mixSelection).flat();
+  preview.innerHTML = '';
+  selected.forEach(p=>{
+    const img = document.createElement('img');
+    img.src = p.dataUrl;
+    preview.appendChild(img);
+  });
+  if(selected.length === 0 && !editingOutfitId){
+    hint.style.display = 'block';
+    confirmBtn.style.display = 'none';
+  } else {
+    hint.style.display = 'none';
+    confirmBtn.style.display = 'flex';
+  }
+}
+
+function compositeImages(dataUrls){
+  return new Promise(async (resolve)=>{
+    const loaded = await Promise.all(dataUrls.map(src=> new Promise(res=>{
+      const im = new Image();
+      im.onload = ()=> res(im);
+      im.src = src;
+    })));
+    const W = 900, H = 1200;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0c0c0c';
+    ctx.fillRect(0,0,W,H);
+    const n = loaded.length;
+    let cells;
+    if(n === 1) cells = [[0,0,W,H]];
+    else if(n === 2) cells = [[0,0,W/2,H],[W/2,0,W/2,H]];
+    else if(n === 3) cells = [[0,0,W,H/2],[0,H/2,W/2,H/2],[W/2,H/2,W/2,H/2]];
+    else if(n === 4) cells = [[0,0,W/2,H/2],[W/2,0,W/2,H/2],[0,H/2,W/2,H/2],[W/2,H/2,W/2,H/2]];
+    else {
+      const cols = 2, rows = Math.ceil(n/cols);
+      const cw = W/cols, ch = H/rows;
+      cells = loaded.map((_,i)=>[ (i%cols)*cw, Math.floor(i/cols)*ch, cw, ch ]);
+    }
+    loaded.forEach((im,i)=>{
+      const [x,y,w,h] = cells[i];
+      const scale = Math.max(w/im.width, h/im.height);
+      const sw = w/scale, sh = h/scale;
+      const sx = (im.width-sw)/2, sy = (im.height-sh)/2;
+      ctx.drawImage(im, sx, sy, sw, sh, x+3, y+3, w-6, h-6);
+    });
+    resolve(canvas.toDataURL('image/jpeg', 0.82));
+  });
+}
+
+document.getElementById('confirmMixBtn').onclick = async ()=>{
+  const selected = Object.values(mixSelection).flat();
+  if(selected.length === 0 && !editingOutfitId) return;
+  const pieceIds = selected.map(p=>p.id);
+
+  if(editingOutfitId){
+    showToast('saving changes…');
+    try{
+      const targetSeasons = Array.from(mixSeasons);
+      if(targetSeasons.length === 0) targetSeasons.push(editingOutfitOriginalSeason);
+      const primarySeason = targetSeasons[0];
+
+      if(selected.length > 0){
+        // pieces were touched: recompose the image and update the main entry
+        const composite = await compositeImages(selected.map(p=>p.dataUrl));
+        await updateOutfitContent(editingOutfitId, composite, pieceIds, primarySeason);
+        for(let i=1;i<targetSeasons.length;i++){
+          await addOutfitToDB(targetSeasons[i], composite, editingOutfitName, pieceIds);
+        }
+      } else {
+        // no pieces selected (e.g. a plain uploaded photo): keep the existing
+        // image untouched, only move/duplicate it across the chosen seasons
+        await updateOutfitSeasonOnly(editingOutfitId, primarySeason);
+        if(targetSeasons.length > 1){
+          const original = await getOutfitById(editingOutfitId);
+          if(original){
+            for(let i=1;i<targetSeasons.length;i++){
+              await addOutfitToDB(targetSeasons[i], original.dataUrl, original.name, original.pieceIds);
+            }
+          }
+        }
+      }
+
+      closeMix();
+      if(primarySeason && primarySeason !== activeSeason){
+        activeSeason = primarySeason;
+        applyVibe(activeSeason);
+        renderSeasonTabs();
+      }
+      await renderBoard();
+      showToast('outfit updated');
+    }catch(err){
+      console.error(err);
+      showToast("couldn't save the changes");
+    }
+    return;
+  }
+
+  const name = prompt("enter a name for this mixed outfit (optional):");
+  showToast('creating your outfit…');
+  try{
+    const composite = await compositeImages(selected.map(p=>p.dataUrl));
+    const targetSeasons = Array.from(mixSeasons);
+    
+    // Salva l'outfit in tutte le stagioni selezionate
+    for(const sId of targetSeasons){
+      await addOutfitToDB(sId, composite, name ? name.trim().toLowerCase() : '', pieceIds);
+    }
+    
+    closeMix();
+    if(targetSeasons.includes(activeSeason)){
+      applyVibe(activeSeason);
+    } else {
+      activeSeason = targetSeasons[0];
+      applyVibe(activeSeason);
+    }
+    switchTab('outfits');
+    renderSeasonTabs();
+    await renderBoard();
+    showToast('outfit added to selected seasons');
+  }catch(err){
+    console.error(err);
+    showToast("couldn't create the outfit");
+  }
+};
+
+// --- main navigation & search ---
+let currentTab = 'outfits';
+window.getCurrentTab = ()=> currentTab;
+document.getElementById('navOutfits').onclick = ()=> switchTab('outfits');
+document.getElementById('navPieces').onclick = ()=> switchTab('pieces');
+document.getElementById('navWeek').onclick = ()=> switchTab('week');
+
+document.getElementById('searchInput').oninput = (e)=>{
+  searchQuery = e.target.value;
+  if(currentTab === 'outfits') renderBoard();
+  else if(currentTab === 'pieces') renderPiecesBoard();
+};
+
+function switchTab(tab){
+  currentTab = tab;
+  document.getElementById('navOutfits').classList.toggle('active', tab==='outfits');
+  document.getElementById('navPieces').classList.toggle('active', tab==='pieces');
+  document.getElementById('navWeek').classList.toggle('active', tab==='week');
+  document.getElementById('viewOutfits').style.display = tab==='outfits' ? 'block' : 'none';
+  document.getElementById('viewPieces').style.display = tab==='pieces' ? 'block' : 'none';
+  document.getElementById('viewWeek').style.display = tab==='week' ? 'block' : 'none';
+  
+  const searchBox = document.getElementById('searchContainer');
+  searchBox.style.display = tab === 'week' ? 'none' : 'flex';
+
+  const addBtn = document.getElementById('addBtn');
+  if(tab === 'week'){
+    addBtn.style.display = 'none';
+  } else {
+    addBtn.style.display = 'flex';
+    document.getElementById('addBtnLabel').textContent = tab === 'pieces' ? 'add piece' : 'add outfit';
+  }
+
+  if(tab === 'week'){ showCalendarPanel(); }
+  if(tab === 'pieces'){ renderPieceFilter(); renderPiecesBoard(); }
+  if(tab === 'outfits'){ applyVibe(activeSeason); renderBoard(); }
+}
+
+// --- monthly weekly calendar ---
+function mondayOf(date){
+  const d = new Date(date);
+  const day = (d.getDay()+6)%7;
+  d.setDate(d.getDate()-day); d.setHours(0,0,0,0);
+  return d;
+}
+function mondayKey(mondayDate){ return mondayDate.toISOString().slice(0,10); }
+
+function weeksInMonth(year, month){
+  const first = new Date(year, month, 1);
+  const last = new Date(year, month+1, 0);
+  let d = mondayOf(first);
+  const weeks = [];
+  while(d <= last){
+    weeks.push(new Date(d));
+    d = new Date(d); d.setDate(d.getDate()+7);
+  }
+  return weeks;
+}
+
+function weekRangeLabel(monday){
+  const end = new Date(monday); end.setDate(end.getDate()+6);
+  if(monday.getMonth() === end.getMonth()){
+    return `${monday.getDate()} – ${end.getDate()} ${MONTH_NAMES[monday.getMonth()]}`;
+  }
+  return `${monday.getDate()} ${MONTH_SHORT[monday.getMonth()]} – ${end.getDate()} ${MONTH_SHORT[end.getMonth()]}`;
+}
+
+function showCalendarPanel(){
+  document.getElementById('calendarPanel').style.display = 'block';
+  document.getElementById('weekDetailPanel').style.display = 'none';
+  renderMonthCalendar();
+}
+
+function renderMonthCalendar(){
+  const y = calendarMonth.getFullYear(), m = calendarMonth.getMonth();
+  document.getElementById('monthLabel').textContent = `${MONTH_NAMES[m]} ${y}`;
+  const season = seasonForMonth(m);
+  document.getElementById('monthSeasonLabel').textContent = seasonMeta(season).label;
+  applyVibe(season);
+  const wrap = document.getElementById('weeksList');
+  wrap.innerHTML = '';
+  const weeks = weeksInMonth(y, m);
+  const thisWeekKey = mondayKey(mondayOf(new Date()));
+  weeks.forEach(monday=>{
+    const key = mondayKey(monday);
+    const row = document.createElement('div');
+    row.className = 'week-row' + (key === thisWeekKey ? ' current' : '');
+    row.innerHTML = `
+      <div>
+        <div class="range serif">${weekRangeLabel(monday)}</div>
+        <div class="filled">${key === thisWeekKey ? 'this week · ' : ''}${seasonMeta(season).label}</div>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    row.onclick = ()=> openWeekDetail(monday, season);
+    wrap.appendChild(row);
+  });
+}
+
+document.getElementById('prevMonthBtn').onclick = ()=>{
+  calendarMonth.setMonth(calendarMonth.getMonth()-1);
+  renderMonthCalendar();
+};
+document.getElementById('nextMonthBtn').onclick = ()=>{
+  calendarMonth.setMonth(calendarMonth.getMonth()+1);
+  renderMonthCalendar();
+};
+document.getElementById('todayLink').onclick = ()=>{
+  const today = mondayOf(new Date());
+  calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  openWeekDetail(today, currentSeason());
+};
+document.getElementById('backToCalendar').onclick = ()=> showCalendarPanel();
+
+async function openWeekDetail(monday, season){
+  currentWeekMonday = monday;
+  currentWeekSeason = season;
+  document.getElementById('calendarPanel').style.display = 'none';
+  document.getElementById('weekDetailPanel').style.display = 'block';
+  document.getElementById('weekRangeLabel').textContent = weekRangeLabel(monday);
+  document.getElementById('weekSeasonLabel').textContent = seasonMeta(season).label;
+  applyVibe(season);
+  await renderWeekDetail(false);
+}
+
+async function renderWeekDetail(force){
+  const key = mondayKey(currentWeekMonday);
+  const list = await loadOutfits(currentWeekSeason);
+  let plan = force ? null : await getWeekPlan(key);
+  if(!plan || plan.season !== currentWeekSeason){
+    const picks = generatePicks(list);
+    await setWeekPlan(key, currentWeekSeason, picks);
+    plan = { season: currentWeekSeason, picks };
+  }
+  drawWeek(plan.picks, list);
+}
+
+function generatePicks(list){
+  return Array(7).fill(null);
+}
+
+function drawWeek(picks, list){
+  const wrap = document.getElementById('weekList');
+  wrap.innerHTML = '';
+  const byId = {}; list.forEach(o=>byId[o.id]=o);
+  const todayStr = new Date().toDateString();
+  DAY_NAMES.forEach((day, i)=>{
+    const dayDate = new Date(currentWeekMonday);
+    dayDate.setDate(dayDate.getDate() + i);
+    const isToday = dayDate.toDateString() === todayStr;
+    const dayLabel = `${day}<span class="day-num">${dayDate.getDate()}</span>`;
+    const outfit = picks[i] ? byId[picks[i]] : null;
+    const card = document.createElement('div');
+    card.className = 'daycard' + (outfit ? '' : ' empty-day') + (isToday ? ' today-day' : '');
+    
+    let leftHtml = '';
+    let actionsHtml = `<button onclick="event.stopPropagation(); randomSingleDay(${i})"><span class="mono-emoji">🎲</span> random</button>
+        <button onclick="event.stopPropagation(); openPickerForDay(${i})"><span class="mono-emoji">✏️</span> pick</button>`;
+    if(outfit){
+      const labelText = outfit.name ? outfit.name.toLowerCase() : `outfit ${i+1}`;
+      leftHtml = `<img class="thumb" src="${outfit.dataUrl}"><div class="info"><div class="day">${dayLabel}</div><div class="sub">${labelText}</div></div>`;
+      actionsHtml += `<button onclick="event.stopPropagation(); clearDay(${i})"><span class="mono-emoji">🗑️</span> delete</button>`;
+    } else {
+      leftHtml = `<div class="thumb"></div><div class="info"><div class="day">${dayLabel}</div><div class="sub">no outfit selected</div></div>`;
+    }
+    
+    card.innerHTML = leftHtml + `
+      <div class="daycard-actions">${actionsHtml}</div>`;
+
+    // a day that already has an outfit opens the same enlarged preview used
+    // for friends' posted outfits; an empty day still opens the picker.
+    // the ✏️ pick button (stopPropagation above) is still there to change it.
+    const labelText = outfit ? (outfit.name ? outfit.name.toLowerCase() : `outfit ${i+1}`) : '';
+    card.onclick = ()=> outfit
+      ? window.openFriendOutfitModal(outfit.dataUrl, `${day} — ${labelText}`)
+      : openPickerForDay(i);
+    wrap.appendChild(card);
+  });
+}
+
+async function clearDay(index){
+  const key = mondayKey(currentWeekMonday);
+  const list = await loadOutfits(currentWeekSeason);
+  let plan = await getWeekPlan(key);
+  if(!plan) plan = { season: currentWeekSeason, picks: Array(7).fill(null) };
+  plan.picks[index] = null;
+  await setWeekPlan(key, currentWeekSeason, plan.picks);
+  drawWeek(plan.picks, list);
+  showToast('outfit removed from this day');
+}
+
+async function randomSingleDay(index){
+  const key = mondayKey(currentWeekMonday);
+  const list = await loadOutfits(currentWeekSeason);
+  if(list.length === 0){
+    showToast('no outfits in ' + currentWeekSeason);
+    return;
+  }
+  let plan = await getWeekPlan(key);
+  if(!plan) plan = { season: currentWeekSeason, picks: Array(7).fill(null) };
+  
+  const randOutfit = list[Math.floor(Math.random() * list.length)];
+  plan.picks[index] = randOutfit.id;
+  await setWeekPlan(key, currentWeekSeason, plan.picks);
+  drawWeek(plan.picks, list);
+  showToast('random outfit assigned');
+}
+
+async function openPickerForDay(index){
+  dayPickerTargetIndex = index;
+  const list = await loadOutfits(currentWeekSeason);
+  const grid = document.getElementById('pickerGrid');
+  grid.innerHTML = '';
+  
+  if(list.length === 0){
+    grid.innerHTML = `<div style="grid-column: span 2; text-align:center; color:var(--muted); padding:20px 0;">no outfits saved for this season yet.</div>`;
+  } else {
+    list.forEach(o=>{
+      const card = document.createElement('div');
+      card.className = 'picker-card';
+      card.innerHTML = `<img src="${o.dataUrl}"><div class="title">${(o.name || 'outfit').toLowerCase()}</div>`;
+      card.onclick = ()=> selectOutfitForDay(o.id);
+      grid.appendChild(card);
+    });
+  }
+  
+  document.getElementById('pickerModalOverlay').classList.add('show');
+}
+
+async function selectOutfitForDay(outfitId){
+  if(dayPickerTargetIndex === null) return;
+  const key = mondayKey(currentWeekMonday);
+  const list = await loadOutfits(currentWeekSeason);
+  let plan = await getWeekPlan(key);
+  if(!plan) plan = { season: currentWeekSeason, picks: Array(7).fill(null) };
+  
+  plan.picks[dayPickerTargetIndex] = outfitId;
+  await setWeekPlan(key, currentWeekSeason, plan.picks);
+  document.getElementById('pickerModalOverlay').classList.remove('show');
+  drawWeek(plan.picks, list);
+  showToast('outfit updated');
+}
+
+document.getElementById('pickerModalClose').onclick = ()=>{
+  document.getElementById('pickerModalOverlay').classList.remove('show');
+};
+
+document.getElementById('regenBtn').onclick = async ()=>{
+  const key = mondayKey(currentWeekMonday);
+  const list = await loadOutfits(currentWeekSeason);
+  if(list.length === 0){
+    showToast('no outfits in ' + currentWeekSeason);
+    return;
+  }
+  const shuffled = list.slice().sort(()=>Math.random()-0.5);
+  const picks = [];
+  for(let i=0;i<7;i++){
+    picks.push(shuffled[i % shuffled.length].id);
+  }
+  await setWeekPlan(key, currentWeekSeason, picks);
+  drawWeek(picks, list);
+  showToast('week reshuffled');
+};
+
+// --- pwa install ---
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'inline-block';
+  document.getElementById('installText').textContent = 'install outfits to your home screen — no app store, just an icon.';
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').onclick = async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+};
+document.getElementById('installClose').onclick = ()=>{
+  document.getElementById('installBanner').style.display = 'none';
+};
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+if(!isStandalone && isIOS && !sessionStorage.getItem('installBannerDismissed')){
+  document.getElementById('installText').textContent = 'to install: tap share, then "add to home screen".';
+  document.getElementById('installBanner').style.display = 'flex';
+}
+document.getElementById('installClose').addEventListener('click', ()=> sessionStorage.setItem('installBannerDismissed','1'));
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=> console.warn('service worker not registered', err));
+  });
+}
+
+// --- init ---
+(async function init(){
+  applyThemeWhite();
+  await refreshCategories();
+  applyVibe(activeSeason);
+  renderSeasonTabs();
+  await renderBoard();
+  const meta = seasonMeta(currentSeason());
+  document.getElementById('subtitle').textContent = `it's ${meta.label} — here are your outfits`;
+})();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, deleteUser
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where,
+  getDocs, onSnapshot, addDoc, serverTimestamp, writeBatch, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBI3nQEaFRIx4Al6JYFlm6vz9mkLnDdzJU",
+  authDomain: "outfits-online-6e8c1.firebaseapp.com",
+  projectId: "outfits-online-6e8c1",
+  storageBucket: "outfits-online-6e8c1.firebasestorage.app",
+  messagingSenderId: "238107855209",
+  appId: "1:238107855209:web:00f907d4c4a3452d0855f8"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+let currentUsername = null;
+let pendingFriendUid = null; // from ?add=uid in the url
+let unsubIncoming = null, unsubOutgoing = null, unsubFriends = null, unsubNotif = null;
+const userCache = new Map(); // uid -> username
+const PENDING_DELETE_KEY = 'outfits_pending_delete_uid'; // uid whose auth entry still needs finishing off on next fresh sign-in
+
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function initials(name){ return (name || '?').slice(0,2).toUpperCase(); }
+function friendEdgeId(a,b){ return a < b ? a+'_'+b : b+'_'+a; }
+const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+
+async function getUsernameOf(uid){
+  if(userCache.has(uid)) return userCache.get(uid);
+  const snap = await getDoc(doc(db,'users',uid));
+  const name = snap.exists() ? snap.data().username : 'user';
+  userCache.set(uid, name);
+  return name;
+}
+
+// --- gate ui ---
+function showAuthGate(){
+  document.getElementById('appRoot').style.display = 'none';
+  document.getElementById('bottomTabbar').style.display = 'none';
+  document.getElementById('usernameGate').style.display = 'none';
+  document.getElementById('authGate').style.display = 'flex';
+}
+function showUsernameGate(){
+  document.getElementById('appRoot').style.display = 'none';
+  document.getElementById('bottomTabbar').style.display = 'none';
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('usernameGate').style.display = 'flex';
+}
+function showApp(){
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('usernameGate').style.display = 'none';
+  document.getElementById('appRoot').style.display = 'flex';
+  document.getElementById('bottomTabbar').style.display = 'flex';
+  document.getElementById('profileAvatarBtn').textContent = initials(currentUsername);
+}
+
+const PRIVACY_ACCEPTED_KEY = 'outfits_privacy_accepted';
+
+document.getElementById('googleSignInBtn').onclick = async ()=>{
+  if(!document.getElementById('privacyConsentCheck').checked){
+    showToast('please accept the privacy policy first');
+    return;
+  }
+  try{
+    await signInWithPopup(auth, provider);
+  } catch(err){
+    console.error(err);
+    if(err && err.code === 'auth/popup-blocked'){
+      showToast('il browser ha bloccato il popup, consenti i popup per questo sito');
+    } else if(err && err.code === 'auth/popup-closed-by-user'){
+      // l'utente ha chiuso il popup, non serve un toast di errore
+    } else {
+      showToast(err && err.code ? err.code : "sign-in failed, try again");
+    }
+  }
+};
+document.getElementById('cancelUsernameBtn').onclick = async ()=>{
+  await signOut(auth);
+};
+
+// --- privacy policy ---
+function openPrivacySheet(){ document.getElementById('privacySheet').classList.add('show'); }
+function closePrivacySheet(){ document.getElementById('privacySheet').classList.remove('show'); }
+document.getElementById('privacyGateLink').onclick = openPrivacySheet;
+document.getElementById('profilePrivacyLink').onclick = openPrivacySheet;
+document.getElementById('privacyCloseBtn').onclick = closePrivacySheet;
+document.getElementById('privacySheet').onclick = (e)=>{ if(e.target.id==='privacySheet') closePrivacySheet(); };
+
+const consentCheck = document.getElementById('privacyConsentCheck');
+const signInBtnEl = document.getElementById('googleSignInBtn');
+if(localStorage.getItem(PRIVACY_ACCEPTED_KEY) === 'true'){
+  consentCheck.checked = true;
+  signInBtnEl.classList.remove('disabled');
+}
+consentCheck.onchange = ()=>{
+  signInBtnEl.classList.toggle('disabled', !consentCheck.checked);
+  if(consentCheck.checked) localStorage.setItem(PRIVACY_ACCEPTED_KEY, 'true');
+  else localStorage.removeItem(PRIVACY_ACCEPTED_KEY);
+};
+
+// --- username choice ---
+let usernameCheckTimer = null;
+document.getElementById('usernameInput').oninput = (e)=>{
+  const val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  e.target.value = val;
+  const statusEl = document.getElementById('usernameStatus');
+  const confirmBtn = document.getElementById('confirmUsernameBtn');
+  confirmBtn.classList.remove('enabled');
+  if(!USERNAME_RE.test(val)){
+    statusEl.textContent = val.length ? '3 to 20 characters: lowercase letters, numbers, underscore' : '';
+    statusEl.className = 'username-status';
+    return;
+  }
+  statusEl.textContent = 'checking availability…';
+  statusEl.className = 'username-status';
+  clearTimeout(usernameCheckTimer);
+  usernameCheckTimer = setTimeout(async ()=>{
+    try{
+      const snap = await getDoc(doc(db,'usernames',val));
+      if(snap.exists()){
+        statusEl.textContent = 'this username is already taken, try another one';
+        statusEl.className = 'username-status taken';
+      } else {
+        statusEl.textContent = 'available';
+        statusEl.className = 'username-status ok';
+        confirmBtn.classList.add('enabled');
+      }
+    }catch(err){ console.error(err); }
+  }, 450);
+};
+
+document.getElementById('confirmUsernameBtn').onclick = async ()=>{
+  const val = document.getElementById('usernameInput').value.toLowerCase();
+  if(!USERNAME_RE.test(val) || !currentUser) return;
+  try{
+    await setDoc(doc(db,'usernames',val), { uid: currentUser.uid });
+    await setDoc(doc(db,'users',currentUser.uid), { username: val, createdAt: serverTimestamp() });
+    currentUsername = val;
+    await afterLoginReady();
+  }catch(err){
+    console.error(err);
+    document.getElementById('usernameStatus').textContent = 'someone just took that username, try another one';
+    document.getElementById('usernameStatus').className = 'username-status taken';
+    document.getElementById('confirmUsernameBtn').classList.remove('enabled');
+  }
+};
+
+// --- profile menu ---
+document.getElementById('profileAvatarBtn').onclick = ()=>{
+  document.getElementById('profileSheetUsername').textContent = currentUsername || '—';
+  document.getElementById('profileSheet').classList.add('show');
+};
+document.getElementById('closeProfileSheetBtn').onclick = ()=> document.getElementById('profileSheet').classList.remove('show');
+document.getElementById('profileSheet').onclick = (e)=>{ if(e.target.id==='profileSheet') e.target.classList.remove('show'); };
+
+document.getElementById('signOutBtn').onclick = async ()=>{
+  document.getElementById('profileSheet').classList.remove('show');
+  await signOut(auth);
+};
+
+document.getElementById('deleteAccountBtn').onclick = async ()=>{
+  if(!currentUser) return;
+  if(!confirm('permanently delete your account? username, friendships and shared outfits will be lost (outfits saved only on this phone stay put).')) return;
+  document.getElementById('profileSheet').classList.remove('show');
+  showToast('deleting…');
+  const uid = currentUser.uid;
+  const usernameToDelete = currentUsername;
+
+  // wipe local wardrobe FIRST and unconditionally: whatever happens with the
+  // network afterwards, this device should never show old fits again
+  await wipeLocalWardrobe().catch(()=>{});
+
+  try{
+    if(usernameToDelete) await deleteDoc(doc(db,'usernames',usernameToDelete)).catch(()=>{});
+    await deleteDoc(doc(db,'users',uid)).catch(()=>{});
+    await deleteDoc(doc(db,'dailyOutfits',uid)).catch(()=>{});
+
+    const swagsSnap = await getDocs(collection(db,'dailyOutfits',uid,'swags')).catch(()=>({docs:[]}));
+    for(const d of swagsSnap.docs) await deleteDoc(d.ref).catch(()=>{});
+
+    const friendsSnap = await getDocs(query(collection(db,'friends'), where('uids','array-contains',uid))).catch(()=>({docs:[]}));
+    // also remove the swag this account left on each friend's outfit of the day,
+    // before the friend edges themselves get deleted below
+    for(const d of friendsSnap.docs){
+      const otherUid = (d.data().uids || []).find(u=>u!==uid);
+      if(otherUid) await deleteDoc(doc(db,'dailyOutfits',otherUid,'swags',uid)).catch(()=>{});
+    }
+    for(const d of friendsSnap.docs) await deleteDoc(d.ref).catch(()=>{});
+
+    const reqFrom = await getDocs(query(collection(db,'friendRequests'), where('from','==',uid))).catch(()=>({docs:[]}));
+    for(const d of reqFrom.docs) await deleteDoc(d.ref).catch(()=>{});
+    const reqTo = await getDocs(query(collection(db,'friendRequests'), where('to','==',uid))).catch(()=>({docs:[]}));
+    for(const d of reqTo.docs) await deleteDoc(d.ref).catch(()=>{});
+
+    const notifSnap = await getDocs(collection(db,'notifications',uid,'items')).catch(()=>({docs:[]}));
+    for(const d of notifSnap.docs) await deleteDoc(d.ref).catch(()=>{});
+
+    try{
+      await deleteUser(currentUser);
+    }catch(authErr){
+      if(authErr && authErr.code === 'auth/requires-recent-login'){
+        // firestore data is already fully wiped above. we deliberately do
+        // NOT pop the google account chooser here on our own — that popup
+        // must only ever appear from an explicit tap on "sign in with
+        // google". remember that this uid still needs its auth entry
+        // removed, and finish the job the next time the user actually
+        // signs back in themselves (see onAuthStateChanged).
+        localStorage.setItem(PENDING_DELETE_KEY, currentUser.uid);
+        await signOut(auth).catch(()=>{});
+      } else {
+        throw authErr;
+      }
+    }
+
+    showToast('account deleted');
+  }catch(err){
+    console.error(err);
+    showToast("couldn't delete everything, try again");
+  } finally {
+    // always reload, success or not: this guarantees a fully clean auth
+    // state and UI instead of ever landing on a half-signed-in screen
+    setTimeout(()=> location.reload(), 1000);
+  }
+};
+
+// --- tab bar principale: home / friends ---
+document.getElementById('mainTabHome').onclick = ()=> switchMainTab('home');
+document.getElementById('mainTabFriends').onclick = ()=> switchMainTab('friends');
+let friendsRefreshTimer = null;
+function switchMainTab(tab){
+  document.getElementById('mainTabHome').classList.toggle('active', tab==='home');
+  document.getElementById('mainTabFriends').classList.toggle('active', tab==='friends');
+  document.getElementById('viewHome').style.display = tab==='home' ? 'block' : 'none';
+  document.getElementById('viewFriends').style.display = tab==='friends' ? 'block' : 'none';
+  if(friendsRefreshTimer){ clearInterval(friendsRefreshTimer); friendsRefreshTimer = null; }
+  if(tab === 'friends'){
+    document.getElementById('addBtn').style.display = 'none';
+    renderFriendsList();
+    // swag counts/state aren't on a live listener, so refresh them gently
+    // while this screen is open — but only the counts/button states, never
+    // a full rebuild of the cards (that was rebuilding the images every
+    // ~10s, causing a visible flicker, and could also yank a swag button
+    // out from under an in-progress tap).
+    friendsRefreshTimer = setInterval(refreshSwagStates, 15000);
+  } else {
+    switchTab(window.getCurrentTab()); // reapply correct fab visibility based on outfits/pieces/week
+  }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible' && document.getElementById('mainTabFriends').classList.contains('active')){
+    refreshSwagStates();
+  }
+});
+
+// lightweight refresh: updates swag button state + counts on the friend
+// cards already on screen, without touching images or rebuilding any DOM
+// nodes (that's what renderFriendsList is for, on tab switch / friend list
+// changes only).
+async function refreshSwagStates(){
+  if(!currentUser) return;
+  const today = todayKey();
+  const cards = document.querySelectorAll('#friendPostsScroll .friend-card');
+  for(const card of cards){
+    const swagBtn = card.querySelector('[data-swag]');
+    if(!swagBtn || swagBtn.dataset.busy === '1') continue; // don't stomp on an in-flight tap
+    const ownerUid = swagBtn.getAttribute('data-swag');
+    const outfitId = swagBtn.getAttribute('data-outfitid') || '';
+    let hasSwagged = false;
+    try{
+      const swagSnap = await getDoc(doc(db,'dailyOutfits',ownerUid,'swags',currentUser.uid));
+      if(swagSnap.exists()){
+        const v = swagSnap.data();
+        hasSwagged = v.activeDateKey === today && v.activeOutfitId === outfitId;
+      }
+    }catch(e){ continue; }
+    swagBtn.classList.toggle('swagged', hasSwagged);
+    const svg = swagBtn.querySelector('svg');
+    if(svg) svg.setAttribute('fill', hasSwagged ? 'currentColor' : 'none');
+    const count = await getTodaySwagCount(ownerUid, outfitId);
+    const countBtn = card.querySelector('.swag-count-link');
+    if(countBtn) countBtn.textContent = count + ' swag';
+  }
+  const myTotal = await getWeeklySwagTotalForOwner(currentUser.uid);
+  const badge = document.getElementById('mySwagWeekCount');
+  if(badge) badge.textContent = myTotal;
+}
+
+// --- friend link ---
+document.getElementById('copyFriendLinkBtn').onclick = async ()=>{
+  if(!currentUser) return;
+  const url = location.origin + location.pathname + '?add=' + currentUser.uid;
+  try{
+    await navigator.clipboard.writeText(url);
+    showToast('link copied');
+  }catch(err){
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('link copied');
+  }
+};
+
+async function handlePendingFriendLink(){
+  const params = new URLSearchParams(location.search);
+  const addUid = params.get('add');
+  if(!addUid) return;
+  history.replaceState({}, '', location.pathname);
+  if(!currentUser || addUid === currentUser.uid) return;
+  const uname = await getUsernameOf(addUid);
+  document.getElementById('linkRequestAvatar').textContent = initials(uname);
+  document.getElementById('linkRequestUsername').textContent = uname;
+  pendingFriendUid = addUid;
+  document.getElementById('linkRequestSheet').classList.add('show');
+}
+document.getElementById('linkRequestCancelBtn').onclick = ()=>{
+  document.getElementById('linkRequestSheet').classList.remove('show');
+  pendingFriendUid = null;
+};
+document.getElementById('linkRequestSendBtn').onclick = async ()=>{
+  if(pendingFriendUid){
+    const uname = await getUsernameOf(pendingFriendUid);
+    await sendFriendRequest(pendingFriendUid, uname);
+  }
+  document.getElementById('linkRequestSheet').classList.remove('show');
+  pendingFriendUid = null;
+};
+
+// --- friend search ---
+let searchDebounce = null;
+document.getElementById('friendSearchInput').oninput = (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(()=> runFriendSearch(q), 350);
+};
+
+async function runFriendSearch(q){
+  const wrap = document.getElementById('friendSearchResults');
+  wrap.innerHTML = '';
+  if(!q) return;
+  try{
+    const snap = await getDocs(query(
+      collection(db,'users'),
+      where('username','>=',q), where('username','<=',q+'\uf8ff'),
+      limit(8)
+    ));
+    const [friendUids, outgoingUids, incomingUids] = await Promise.all([
+      getFriendUidSet(), getOutgoingPendingSet(), getIncomingPendingSet()
+    ]);
+    snap.forEach(d=>{
+      const uid = d.id, uname = d.data().username;
+      if(uid === currentUser.uid) return;
+      const row = document.createElement('div');
+      row.className = 'search-result-row';
+      let actionHtml;
+      if(friendUids.has(uid)) actionHtml = `<button class="small-btn muted" disabled>friend</button>`;
+      else if(outgoingUids.has(uid)) actionHtml = `<button class="small-btn muted" disabled>request sent</button>`;
+      else if(incomingUids.has(uid)) actionHtml = `<button class="small-btn filled" data-accept="${uid}">accept</button>`;
+      else actionHtml = `<button class="small-btn filled" data-add="${uid}" data-name="${uname}">add</button>`;
+      row.innerHTML = `<div class="mini-avatar">${initials(uname)}</div><div class="uname">${uname}</div>${actionHtml}`;
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll('[data-add]').forEach(btn=>{
+      btn.onclick = ()=> sendFriendRequest(btn.getAttribute('data-add'), btn.getAttribute('data-name'));
+    });
+    wrap.querySelectorAll('[data-accept]').forEach(btn=>{
+      btn.onclick = ()=> acceptRequestFrom(btn.getAttribute('data-accept'));
+    });
+  }catch(err){ console.error(err); }
+}
+
+async function getFriendUidSet(){
+  const snap = await getDocs(query(collection(db,'friends'), where('uids','array-contains',currentUser.uid)));
+  const set = new Set();
+  snap.forEach(d=>{ const other = d.data().uids.find(u=>u!==currentUser.uid); if(other) set.add(other); });
+  return set;
+}
+async function getOutgoingPendingSet(){
+  const snap = await getDocs(query(collection(db,'friendRequests'), where('from','==',currentUser.uid), where('status','==','pending')));
+  const set = new Set(); snap.forEach(d=> set.add(d.data().to)); return set;
+}
+async function getIncomingPendingSet(){
+  const snap = await getDocs(query(collection(db,'friendRequests'), where('to','==',currentUser.uid), where('status','==','pending')));
+  const set = new Set(); snap.forEach(d=> set.add(d.data().from)); return set;
+}
+
+async function sendFriendRequest(toUid, toUsername){
+  if(!currentUser || toUid === currentUser.uid) return;
+  const reqId = currentUser.uid + '_' + toUid;
+  try{
+    await setDoc(doc(db,'friendRequests',reqId), {
+      from: currentUser.uid, to: toUid,
+      fromUsername: currentUsername, toUsername,
+      status: 'pending', createdAt: serverTimestamp()
+    });
+    await addDoc(collection(db,'notifications',toUid,'items'), {
+      type: 'friend_request', fromUid: currentUser.uid, fromUsername: currentUsername,
+      createdAt: serverTimestamp(), read: false
+    });
+    showToast('request sent to ' + toUsername);
+    runFriendSearch(document.getElementById('friendSearchInput').value.toLowerCase().trim());
+  }catch(err){ console.error(err); showToast("couldn't send the request"); }
+}
+
+async function acceptRequestFrom(fromUid){
+  const reqId = fromUid + '_' + currentUser.uid;
+  await acceptRequest(reqId, fromUid);
+  runFriendSearch(document.getElementById('friendSearchInput').value.toLowerCase().trim());
+}
+
+async function markFriendRequestNotifResolved(fromUid, resolution){
+  try{
+    const notifSnap = await getDocs(query(
+      collection(db,'notifications',currentUser.uid,'items'),
+      where('type','==','friend_request'), where('fromUid','==',fromUid)
+    ));
+    const batch = writeBatch(db);
+    notifSnap.forEach(d=> batch.update(d.ref, { resolved: resolution }));
+    await batch.commit();
+  }catch(err){ console.error(err); }
+}
+
+async function acceptRequest(reqId, fromUid){
+  try{
+    const fromUsername = await getUsernameOf(fromUid);
+    await updateDoc(doc(db,'friendRequests',reqId), { status: 'accepted' });
+    const edgeId = friendEdgeId(currentUser.uid, fromUid);
+    await setDoc(doc(db,'friends',edgeId), { uids: [currentUser.uid, fromUid].sort(), since: serverTimestamp() });
+    await addDoc(collection(db,'notifications',fromUid,'items'), {
+      type: 'friend_accepted', fromUid: currentUser.uid, fromUsername: currentUsername,
+      createdAt: serverTimestamp(), read: false
+    });
+    await markFriendRequestNotifResolved(fromUid, 'accepted');
+    showToast('you are now friends with ' + fromUsername);
+  }catch(err){ console.error(err); showToast("couldn't accept the request"); }
+}
+
+async function declineRequest(reqId, fromUid){
+  try{
+    await deleteDoc(doc(db,'friendRequests',reqId));
+    if(fromUid) await markFriendRequestNotifResolved(fromUid, 'declined');
+  }
+  catch(err){ console.error(err); }
+}
+
+// --- real-time request lists ---
+function listenRequests(){
+  unsubIncoming = onSnapshot(query(collection(db,'friendRequests'), where('to','==',currentUser.uid), where('status','==','pending')), snap=>{
+    const section = document.getElementById('incomingRequestsSection');
+    const list = document.getElementById('incomingRequestsList');
+    list.innerHTML = '';
+    section.style.display = snap.empty ? 'none' : 'block';
+    let count = 0;
+    snap.forEach(d=>{
+      count++;
+      const r = d.data();
+      const row = document.createElement('div');
+      row.className = 'request-row';
+      row.innerHTML = `<div class="mini-avatar">${initials(r.fromUsername)}</div><div class="uname">${r.fromUsername}</div>
+        <div class="request-actions">
+          <button class="small-btn filled" data-accept="${d.id}" data-from="${r.from}">accept</button>
+          <button class="small-btn muted" data-decline="${d.id}" data-declinefrom="${r.from}">decline</button>
+        </div>`;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('[data-accept]').forEach(btn=>{
+      btn.onclick = ()=> acceptRequest(btn.getAttribute('data-accept'), btn.getAttribute('data-from'));
+    });
+    list.querySelectorAll('[data-decline]').forEach(btn=>{
+      btn.onclick = ()=> declineRequest(btn.getAttribute('data-decline'), btn.getAttribute('data-declinefrom'));
+    });
+    const badge = document.getElementById('friendsTabBadge');
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  });
+
+  unsubOutgoing = onSnapshot(query(collection(db,'friendRequests'), where('from','==',currentUser.uid), where('status','==','pending')), snap=>{
+    const section = document.getElementById('outgoingRequestsSection');
+    const list = document.getElementById('outgoingRequestsList');
+    list.innerHTML = '';
+    section.style.display = snap.empty ? 'none' : 'block';
+    snap.forEach(d=>{
+      const r = d.data();
+      const row = document.createElement('div');
+      row.className = 'request-row';
+      row.innerHTML = `<div class="mini-avatar">${initials(r.toUsername)}</div><div class="uname">${r.toUsername}</div>
+        <button class="small-btn muted" data-cancel="${d.id}">cancel</button>`;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('[data-cancel]').forEach(btn=>{
+      btn.onclick = ()=> declineRequest(btn.getAttribute('data-cancel'));
+    });
+  });
+}
+
+// --- friends list + outfit of the day ---
+function listenFriends(){
+  unsubFriends = onSnapshot(query(collection(db,'friends'), where('uids','array-contains',currentUser.uid)), ()=>{
+    renderFriendsList();
+  });
+}
+
+let friendsRenderToken = 0;
+async function renderFriendsList(){
+  if(!currentUser) return;
+  const myToken = ++friendsRenderToken;
+  const postsWrap = document.getElementById('friendPostsScroll');
+  const postsLabel = document.getElementById('friendPostsLabel');
+  const wrap = document.getElementById('friendsList');
+  const empty = document.getElementById('friendsEmpty');
+  const snap = await getDocs(query(collection(db,'friends'), where('uids','array-contains',currentUser.uid)));
+  if(myToken !== friendsRenderToken) return; // a newer render started meanwhile, abandon this one
+  postsWrap.innerHTML = '';
+  wrap.innerHTML = '';
+  if(snap.empty){
+    empty.style.display = 'block';
+    postsLabel.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  const today = todayKey();
+  let hasPosts = false;
+  for(const d of snap.docs){
+    if(myToken !== friendsRenderToken) return; // abandon mid-loop if superseded
+    const otherUid = d.data().uids.find(u=>u!==currentUser.uid);
+    if(!otherUid) continue;
+    const uname = await getUsernameOf(otherUid);
+    let outfitDoc = null;
+    try{
+      const s = await getDoc(doc(db,'dailyOutfits',otherUid));
+      if(s.exists() && s.data().dateKey === today) outfitDoc = s.data();
+    }catch(e){}
+    if(myToken !== friendsRenderToken) return;
+
+    if(outfitDoc){
+      hasPosts = true;
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      const outfitId = outfitDoc.outfitId || '';
+      let hasSwagged = false;
+      try{
+        const swagSnap = await getDoc(doc(db,'dailyOutfits',otherUid,'swags',currentUser.uid));
+        if(swagSnap.exists()){
+          const v = swagSnap.data();
+          hasSwagged = v.activeDateKey === today && v.activeOutfitId === outfitId;
+        }
+      }catch(e){}
+      const swagCount = await getTodaySwagCount(otherUid, outfitId);
+      if(myToken !== friendsRenderToken) return;
+      card.innerHTML = `
+        <div class="friend-card-head"><div class="mini-avatar">${initials(uname)}</div><div class="uname">${uname}</div></div>
+        <img src="${outfitDoc.dataUrl}" data-viewfriendoutfit="${uname.replace(/"/g,'')}">
+        <div class="friend-card-foot">
+          <button class="swag-btn ${hasSwagged?'swagged':''}" data-swag="${otherUid}" data-outfitid="${outfitId}">
+            <svg viewBox="0 0 24 24" fill="${hasSwagged?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
+            swag
+          </button>
+          <button class="swag-count-link" data-swaglist="${otherUid}" data-outfitid="${outfitId}">${swagCount} swag</button>
+        </div>`;
+      card.querySelector('[data-viewfriendoutfit]').onclick = ()=> openFriendOutfitModal(outfitDoc.dataUrl, uname);
+      postsWrap.appendChild(card);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'friend-row-plain';
+    row.innerHTML = `<div class="mini-avatar">${initials(uname)}</div><div class="uname">${uname}</div>
+      ${outfitDoc ? '' : '<div class="no-outfit-note">no outfit today</div>'}
+      <button class="small-btn muted remove-friend-btn" data-removefriend="${otherUid}" data-uname="${uname}">remove</button>`;
+    wrap.appendChild(row);
+  }
+  if(myToken !== friendsRenderToken) return;
+  postsLabel.style.display = hasPosts ? 'block' : 'none';
+  postsWrap.style.display = hasPosts ? 'flex' : 'none';
+  postsWrap.querySelectorAll('[data-swag]').forEach(btn=>{
+    btn.onclick = ()=> toggleSwag(btn.getAttribute('data-swag'), btn);
+  });
+  postsWrap.querySelectorAll('[data-swaglist]').forEach(btn=>{
+    btn.onclick = ()=> openSwagList(btn.getAttribute('data-swaglist'), btn.getAttribute('data-outfitid') || '');
+  });
+  wrap.querySelectorAll('[data-removefriend]').forEach(btn=>{
+    btn.onclick = ()=> confirmRemoveFriend(btn.getAttribute('data-removefriend'), btn.getAttribute('data-uname'));
+  });
+  getWeeklySwagTotalForOwner(currentUser.uid).then(total=>{
+    const el = document.getElementById('mySwagWeekCount');
+    if(el) el.textContent = total;
+  });
+}
+
+function openFriendOutfitModal(dataUrl, uname){
+  document.getElementById('friendOutfitModalImg').src = dataUrl;
+  document.getElementById('friendOutfitModalTitle').textContent = uname.toLowerCase();
+  document.getElementById('friendOutfitModalOverlay').classList.add('show');
+}
+// exposed so the (non-module) week view can reuse this same enlarged preview
+// for a day's already-assigned outfit, instead of opening the picker.
+window.openFriendOutfitModal = openFriendOutfitModal;
+
+async function confirmRemoveFriend(otherUid, uname){
+  if(!confirm('remove ' + uname + ' from your friends?')) return;
+  try{
+    const edgeId = friendEdgeId(currentUser.uid, otherUid);
+    await deleteDoc(doc(db,'friends',edgeId));
+    showToast(uname + ' removed from your friends');
+    renderFriendsList();
+  }catch(err){ console.error(err); showToast("couldn't remove friend"); }
+}
+
+async function toggleSwag(ownerUid, btnEl){
+  if(btnEl.dataset.busy === '1') return; // ignore double-taps while a swag write is in flight
+  btnEl.dataset.busy = '1';
+  try{
+    const outfitId = btnEl.getAttribute('data-outfitid') || '';
+    const today = todayKey();
+    const weekKey = mondayKey(mondayOf(new Date()));
+    const ref = doc(db,'dailyOutfits',ownerUid,'swags',currentUser.uid);
+    const snap = await getDoc(ref);
+    const data = snap.exists() ? snap.data() : null;
+    // "active" tracks whether *this specific day's post* is currently
+    // swagged by me — it resets by itself whenever the owner posts a
+    // different outfit (outfitId won't match anymore), no cleanup needed.
+    // "weeklyDaysSwagged" is a separate running history that only ever
+    // grows within the week, so it survives that reset and powers the
+    // weekly swag rank — it only clears itself once a new week starts.
+    const isActiveNow = !!(data && data.activeDateKey === today && data.activeOutfitId === outfitId);
+    const prevDays = (data && data.weekKey === weekKey && Array.isArray(data.weeklyDaysSwagged)) ? data.weeklyDaysSwagged : [];
+
+    // the security rules for this subcollection only allow *creating* a
+    // fresh doc or *deleting* one — not overwriting one that already
+    // exists. so whenever a doc is already there, delete it first, then (if
+    // there's still something worth keeping) create a brand-new one — two
+    // separate, individually-permitted operations standing in for an update.
+    if(snap.exists()) await deleteDoc(ref);
+
+    if(isActiveNow){
+      const days = prevDays.filter(dk => dk !== today);
+      if(days.length > 0){
+        await setDoc(ref, {
+          username: currentUsername,
+          swaggedAt: (data && data.swaggedAt) || serverTimestamp(),
+          activeDateKey: null, activeOutfitId: null,
+          weekKey, weeklyDaysSwagged: days
+        });
+      }
+      btnEl.classList.remove('swagged');
+    } else {
+      const days = new Set(prevDays);
+      days.add(today);
+      await setDoc(ref, {
+        username: currentUsername, swaggedAt: serverTimestamp(),
+        activeDateKey: today, activeOutfitId: outfitId,
+        weekKey, weeklyDaysSwagged: Array.from(days)
+      });
+      btnEl.classList.add('swagged');
+      await addDoc(collection(db,'notifications',ownerUid,'items'), {
+        type: 'swag', fromUid: currentUser.uid, fromUsername: currentUsername,
+        createdAt: serverTimestamp(), read: false
+      });
+    }
+    const countBtn = btnEl.parentElement.querySelector('.swag-count-link');
+    if(countBtn) countBtn.textContent = (await getTodaySwagCount(ownerUid, outfitId)) + ' swag';
+  }catch(err){ console.error(err); showToast("couldn't swag this"); }
+  finally{ btnEl.dataset.busy = '0'; }
+}
+
+// how many friends currently have this exact (today, outfitId) post active —
+// i.e. today's swag count shown under a friend's post.
+async function getTodaySwagCount(ownerUid, outfitId){
+  const today = todayKey();
+  try{
+    const snap = await getDocs(collection(db,'dailyOutfits',ownerUid,'swags'));
+    let count = 0;
+    snap.forEach(d=>{
+      const v = d.data();
+      if(v.activeDateKey === today && v.activeOutfitId === outfitId) count++;
+    });
+    return count;
+  }catch(e){ console.error(e); return 0; }
+}
+
+// total swags received this week (sums each friend's weeklyDaysSwagged for
+// the current week) — used for both "your swag this week" and the rank list.
+async function getWeeklySwagTotalForOwner(ownerUid){
+  const weekKey = mondayKey(mondayOf(new Date()));
+  try{
+    const snap = await getDocs(collection(db,'dailyOutfits',ownerUid,'swags'));
+    let total = 0;
+    snap.forEach(d=>{
+      const v = d.data();
+      if(v.weekKey === weekKey && Array.isArray(v.weeklyDaysSwagged)) total += v.weeklyDaysSwagged.length;
+    });
+    return total;
+  }catch(e){ console.error(e); return 0; }
+}
+
+// when today's post gets replaced or removed, subtract *only today's*
+// contribution from every friend's weekly history for this owner — the rest
+// of the week's swags stay exactly as they were.
+async function retractTodaysWeeklyCredit(ownerUid){
+  const today = todayKey();
+  try{
+    const snap = await getDocs(collection(db,'dailyOutfits',ownerUid,'swags'));
+    for(const d of snap.docs){
+      const v = d.data();
+      if(!Array.isArray(v.weeklyDaysSwagged) || !v.weeklyDaysSwagged.includes(today)) continue;
+      const days = v.weeklyDaysSwagged.filter(dk => dk !== today);
+      const wasActiveToday = v.activeDateKey === today;
+      // same reasoning as in toggleSwag: the rules only allow create/delete
+      // on this subcollection, not overwriting an existing doc, so delete
+      // first and only recreate it if there's still history worth keeping.
+      await deleteDoc(d.ref);
+      if(days.length > 0){
+        await setDoc(d.ref, {
+          username: v.username,
+          swaggedAt: v.swaggedAt || serverTimestamp(),
+          activeDateKey: wasActiveToday ? null : (v.activeDateKey || null),
+          activeOutfitId: wasActiveToday ? null : (v.activeOutfitId || null),
+          weekKey: v.weekKey, weeklyDaysSwagged: days
+        });
+      }
+    }
+  }catch(e){ console.error('retract weekly credit failed', e); }
+}
+
+async function openSwagList(ownerUid, outfitId){
+  const body = document.getElementById('swagListBody');
+  body.innerHTML = '<div class="piece-empty-cat">loading…</div>';
+  document.getElementById('swagListSheet').classList.add('show');
+  const today = todayKey();
+  const snap = await getDocs(collection(db,'dailyOutfits',ownerUid,'swags'));
+  body.innerHTML = '';
+  const active = snap.docs.filter(d=>{
+    const v = d.data();
+    return v.activeDateKey === today && v.activeOutfitId === outfitId;
+  });
+  if(active.length === 0){ body.innerHTML = '<div class="piece-empty-cat">no one yet</div>'; return; }
+  active.forEach(d=>{
+    const r = d.data();
+    const row = document.createElement('div');
+    row.className = 'search-result-row';
+    row.innerHTML = `<div class="mini-avatar">${initials(r.username)}</div><div class="uname">${r.username}</div>`;
+    body.appendChild(row);
+  });
+}
+document.getElementById('swagListSheet').onclick = (e)=>{ if(e.target.id==='swagListSheet') e.target.classList.remove('show'); };
+
+// --- swag rank (weekly) ---
+async function openSwagRank(){
+  const body = document.getElementById('swagRankBody');
+  body.innerHTML = '<div class="piece-empty-cat">loading…</div>';
+  document.getElementById('swagRankSheet').classList.add('show');
+  try{
+    const snap = await getDocs(query(collection(db,'friends'), where('uids','array-contains',currentUser.uid)));
+    const entries = [{ uid: currentUser.uid, uname: currentUsername, isMe: true }];
+    for(const d of snap.docs){
+      const otherUid = d.data().uids.find(u=>u!==currentUser.uid);
+      if(!otherUid) continue;
+      const uname = await getUsernameOf(otherUid);
+      entries.push({ uid: otherUid, uname, isMe: false });
+    }
+    for(const e of entries){ e.total = await getWeeklySwagTotalForOwner(e.uid); }
+    entries.sort((a,b)=> b.total - a.total);
+    body.innerHTML = '';
+    entries.forEach((e,i)=>{
+      const row = document.createElement('div');
+      row.className = 'search-result-row swagrank-row' + (e.isMe ? ' swagrank-me' : '');
+      const pos = i===0 ? '🥇' : i===1 ? '🥈' : i===2 ? '🥉' : (i+1) + '.';
+      row.innerHTML = `<div class="swagrank-pos mono-emoji">${pos}</div><div class="mini-avatar">${initials(e.uname)}</div>
+        <div class="uname">${e.uname}${e.isMe ? ' (you)' : ''}</div><div class="swagrank-total">${e.total}</div>`;
+      body.appendChild(row);
+    });
+    const mine = entries.find(e=>e.isMe);
+    const badge = document.getElementById('mySwagWeekCount');
+    if(badge && mine) badge.textContent = mine.total;
+  }catch(err){
+    console.error(err);
+    body.innerHTML = '<div class="piece-empty-cat">couldn\'t load the ranking</div>';
+  }
+}
+document.getElementById('swagRankEntryBtn').onclick = openSwagRank;
+document.getElementById('swagRankCloseBtn').onclick = ()=> document.getElementById('swagRankSheet').classList.remove('show');
+document.getElementById('swagRankSheet').onclick = (e)=>{ if(e.target.id==='swagRankSheet') e.target.classList.remove('show'); };
+
+document.getElementById('friendOutfitModalClose').onclick = ()=>{
+  document.getElementById('friendOutfitModalOverlay').classList.remove('show');
+};
+document.getElementById('friendOutfitModalOverlay').onclick = (e)=>{
+  if(e.target.id === 'friendOutfitModalOverlay') e.target.classList.remove('show');
+};
+
+// --- notifications ---
+function listenUnreadNotifCount(){
+  unsubNotif = onSnapshot(query(collection(db,'notifications',currentUser.uid,'items'), where('read','==',false)), snap=>{
+    const badge = document.getElementById('notifBadge');
+    badge.textContent = snap.size;
+    badge.style.display = snap.size > 0 ? 'flex' : 'none';
+  });
+}
+
+document.getElementById('notifBtn').onclick = async ()=>{
+  document.getElementById('notifSheet').classList.add('show');
+  const list = document.getElementById('notifList');
+  const empty = document.getElementById('notifEmpty');
+  list.innerHTML = '<div class="piece-empty-cat">loading…</div>';
+  const snap = await getDocs(query(collection(db,'notifications',currentUser.uid,'items'), orderBy('createdAt','desc'), limit(30)));
+  list.innerHTML = '';
+  empty.style.display = snap.empty ? 'block' : 'none';
+  const batch = writeBatch(db);
+  snap.forEach(d=>{
+    const n = d.data();
+    let text = '';
+    if(n.type === 'friend_request') text = `<b>${n.fromUsername}</b> sent you a friend request`;
+    else if(n.type === 'friend_accepted') text = `<b>${n.fromUsername}</b> accepted your friend request`;
+    else if(n.type === 'swag') text = `<b>${n.fromUsername}</b> swagged your outfit of the day`;
+    else text = `<b>${n.fromUsername||'someone'}</b> did something`;
+    const item = document.createElement('div');
+    item.className = 'notif-item' + (n.read ? '' : ' unread');
+    let extra = '';
+    if(n.type === 'friend_request'){
+      if(n.resolved === 'accepted'){
+        extra = `<div class="notif-actions"><span class="small-btn muted" style="pointer-events:none">accepted ✓</span></div>`;
+      } else if(n.resolved === 'declined'){
+        extra = `<div class="notif-actions"><span class="small-btn muted" style="pointer-events:none">declined</span></div>`;
+      } else {
+        extra = `<div class="notif-actions">
+          <button class="small-btn filled" data-nacc="${n.fromUid}" data-nid="${d.id}">accept</button>
+          <button class="small-btn muted" data-ndec="${n.fromUid}" data-nid="${d.id}">decline</button>
+        </div>`;
+      }
+    }
+    item.innerHTML = `<div class="txt">${text}${extra}</div>`;
+    list.appendChild(item);
+    if(!n.read) batch.update(d.ref, { read: true });
+  });
+  batch.commit().catch(()=>{});
+  list.querySelectorAll('[data-nacc]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      await acceptRequestFrom(btn.getAttribute('data-nacc'));
+      btn.closest('.notif-actions').innerHTML = '<span class="small-btn muted" style="pointer-events:none">accepted ✓</span>';
+    };
+  });
+  list.querySelectorAll('[data-ndec]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const fromUid = btn.getAttribute('data-ndec');
+      await declineRequest(fromUid + '_' + currentUser.uid, fromUid);
+      btn.closest('.notif-actions').innerHTML = '<span class="small-btn muted" style="pointer-events:none">declined</span>';
+    };
+  });
+};
+document.getElementById('notifSheet').onclick = (e)=>{ if(e.target.id==='notifSheet') e.target.classList.remove('show'); };
+
+document.getElementById('notifClearBtn').onclick = async ()=>{
+  if(!currentUser) return;
+  if(!confirm('delete all notifications?')) return;
+  try{
+    const snap = await getDocs(collection(db,'notifications',currentUser.uid,'items'));
+    const batch = writeBatch(db);
+    snap.forEach(d=> batch.delete(d.ref));
+    await batch.commit();
+    document.getElementById('notifList').innerHTML = '';
+    document.getElementById('notifEmpty').style.display = 'block';
+  }catch(err){ console.error(err); showToast("couldn't clear notifications"); }
+};
+
+// --- sync today's outfit to the cloud ---
+async function syncTodayOutfitToCloud(){
+  // serialize every sync so two quick actions (e.g. delete this fit, pick a
+  // different one) can't race on reading/writing the same dailyOutfits doc.
+  _syncTodayChain = _syncTodayChain.then(()=> syncTodayOutfitToCloudImpl());
+  return _syncTodayChain;
+}
+let _syncTodayChain = Promise.resolve();
+
+async function syncTodayOutfitToCloudImpl(){
+  if(!currentUser || !currentUsername) return;
+  try{
+    const season = currentSeason();
+    const monday = mondayOf(new Date());
+    const key = mondayKey(monday);
+    const plan = await getWeekPlan(key);
+    const dayIdx = (new Date().getDay()+6)%7;
+    let outfit = null;
+    if(plan && plan.season === season && plan.picks[dayIdx]){
+      const list = await loadOutfits(season);
+      outfit = list.find(o=>o.id === plan.picks[dayIdx]) || null;
+    }
+    const ref = doc(db,'dailyOutfits',currentUser.uid);
+    const today = todayKey();
+    // note: swags are keyed to a specific (dateKey, outfitId) pair (see
+    // toggleSwag), so simply publishing a different outfitId here is enough
+    // for "who swagged today's post" and the daily swag count to correctly
+    // stop applying to the old post — no cleanup needed on this end.
+    const prevSnap = await getDoc(ref).catch(()=>null);
+    const prevData = (prevSnap && prevSnap.exists()) ? prevSnap.data() : null;
+    const newOutfitId = outfit ? outfit.id : null;
+    const todaysOutfitIsActuallyChanging = !!(prevData && prevData.dateKey === today && prevData.outfitId !== newOutfitId);
+    if(outfit){
+      await setDoc(ref, {
+        uid: currentUser.uid, username: currentUsername, dateKey: today,
+        season, outfitId: outfit.id, dataUrl: outfit.dataUrl, updatedAt: serverTimestamp()
+      });
+    } else {
+      await deleteDoc(ref).catch(()=>{});
+    }
+    // today's specific outfit is being replaced or removed: the swags it had
+    // received don't belong to the week total anymore, since that post is
+    // gone — but the rest of the week's totals must NOT be touched.
+    if(todaysOutfitIsActuallyChanging){
+      await retractTodaysWeeklyCredit(currentUser.uid);
+    }
+  }catch(err){ console.error('today outfit sync failed', err); }
+}
+
+function maybeSyncToday(){
+  const weekMonday = window.getCurrentWeekMonday();
+  if(!weekMonday) { syncTodayOutfitToCloud(); return; }
+  if(mondayKey(weekMonday) === mondayKey(mondayOf(new Date()))) syncTodayOutfitToCloud();
+}
+
+function hookWeekPlanChanges(){
+  const _origSelect = window.selectOutfitForDay;
+  window.selectOutfitForDay = async function(...args){ await _origSelect.apply(this,args); maybeSyncToday(); };
+  const _origRandom = window.randomSingleDay;
+  window.randomSingleDay = async function(...args){ await _origRandom.apply(this,args); maybeSyncToday(); };
+  const _origClearDay = window.clearDay;
+  window.clearDay = async function(...args){ await _origClearDay.apply(this,args); maybeSyncToday(); };
+  const regenBtnEl = document.getElementById('regenBtn');
+  const _origRegen = regenBtnEl.onclick;
+  regenBtnEl.onclick = async function(e){ await _origRegen.call(this,e); maybeSyncToday(); };
+  const modalDeleteEl = document.getElementById('modalDelete');
+  const _origModalDelete = modalDeleteEl.onclick;
+  modalDeleteEl.onclick = async function(e){ await _origModalDelete.call(this,e); maybeSyncToday(); };
+  const confirmMixBtnEl = document.getElementById('confirmMixBtn');
+  const _origConfirmMix = confirmMixBtnEl.onclick;
+  confirmMixBtnEl.onclick = async function(e){ await _origConfirmMix.call(this,e); maybeSyncToday(); };
+}
+
+// --- avvio dopo login + username pronti ---
+let hooksInstalled = false;
+async function afterLoginReady(){
+  if(!hooksInstalled){ hookWeekPlanChanges(); hooksInstalled = true; }
+  showApp();
+  await refreshCategories();
+  renderPieceFilter();
+  await renderBoard();
+  await renderPiecesBoard();
+  listenRequests();
+  listenFriends();
+  listenUnreadNotifCount();
+  syncTodayOutfitToCloud();
+  handlePendingFriendLink();
+}
+
+function teardownListeners(){
+  if(unsubIncoming) unsubIncoming();
+  if(unsubOutgoing) unsubOutgoing();
+  if(unsubFriends) unsubFriends();
+  if(unsubNotif) unsubNotif();
+  unsubIncoming = unsubOutgoing = unsubFriends = unsubNotif = null;
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  teardownListeners();
+  if(!user){
+    currentUser = null; currentUsername = null;
+    showAuthGate();
+    return;
+  }
+  // finish off an account deletion that couldn't remove the auth entry last
+  // time because the session wasn't "recent" enough. this sign-in is fresh
+  // (the user just tapped "sign in with google" themselves), so it's the
+  // correct, non-surprising moment to actually delete it — no extra popup,
+  // no landing in the app with a half-deleted account.
+  if(localStorage.getItem(PENDING_DELETE_KEY) === user.uid){
+    localStorage.removeItem(PENDING_DELETE_KEY);
+    try{
+      await deleteUser(user);
+      showToast('account fully deleted');
+    }catch(err){
+      console.error('final account delete failed', err);
+      await signOut(auth).catch(()=>{});
+    }
+    currentUser = null; currentUsername = null;
+    showAuthGate();
+    return;
+  }
+  currentUser = user;
+  try{
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if(snap.exists() && snap.data().username){
+      currentUsername = snap.data().username;
+      await afterLoginReady();
+    } else {
+      showUsernameGate();
+    }
+  }catch(err){
+    console.error(err);
+    showToast('error: ' + (err && err.code ? err.code : 'unknown') + ' — check firestore rules are published');
+  }
+});
+
+// catches the return from signInWithRedirect and surfaces any auth error
+// (e.g. unauthorized domain) instead of failing silently
+getRedirectResult(auth).catch(err=>{
+  console.error('redirect sign-in error', err);
+  if(err && err.code === 'auth/unauthorized-domain'){
+    showToast('this domain is not authorized in firebase yet');
+  } else if(err && err.code){
+    showToast('sign-in error: ' + err.code);
+  }
+});
+</script>
+
+</body>
+</html>
